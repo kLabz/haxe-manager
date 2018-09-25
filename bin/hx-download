@@ -1,0 +1,33 @@
+#!/bin/sh
+
+ROOT=$(dirname $(readlink -f $0))
+
+if [ "$1" == "aws" ]; then
+	TARGET=$3
+
+	if [ -z "$TARGET" ]; then
+		TARGET=$2
+	fi
+
+	URL="http://hxbuilds.s3-website-us-east-1.amazonaws.com/builds/haxe/linux64/haxe_$2.tar.gz"
+	FILENAME="haxe_$2"
+else
+	TARGET=$2
+
+	if [ -z "$TARGET" ]; then
+		TARGET=$1
+	fi
+
+	URL="https://github.com/HaxeFoundation/haxe/releases/download/$1/haxe-$1-linux64.tar.gz"
+	FILENAME="haxe-$1-linux64"
+fi
+
+cd "$ROOT/../releases"
+wget "$URL"
+OUTDIR=$(tar -tf "$FILENAME.tar.gz" | head -n 1)
+tar -xvf "$FILENAME.tar.gz"
+rm "$FILENAME.tar.gz"
+cd -
+
+rm -f "$ROOT/../versions/haxe_$TARGET"
+ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/haxe_$TARGET"
