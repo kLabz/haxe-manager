@@ -9,6 +9,13 @@ echo "Please set HAXE_STD_PATH to $ROOT/std"
 mkdir ../releases
 mkdir ../versions
 
+# Install fzf if needed
+if ! [ -x "$(command -v fzf)" ]; then
+	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-linux_amd64.tgz"
+	tar -xvf "fzf-0.17.4-linux_amd64.tgz"
+	rm "fzf-0.17.4-linux_amd64.tgz"
+fi
+
 # Download some versions
 ./hx-download "3.4.7"
 # ./hx-download "4.0.0-preview.1"
