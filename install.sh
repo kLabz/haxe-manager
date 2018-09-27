@@ -6,8 +6,13 @@ cd "$ROOT/bin"
 echo "Please add $ROOT/bin to your PATH"
 echo "Please set HAXE_STD_PATH to $ROOT/std"
 
-mkdir ../releases
-mkdir ../versions
+if ! [ -e ../releases ]; then
+	mkdir ../releases
+fi
+
+if ! [ -e ../versions ]; then
+	mkdir ../versions
+fi
 
 # Install fzf if needed
 if ! [ -x "$(command -v fzf)" ]; then
