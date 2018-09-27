@@ -27,7 +27,7 @@ fi
 # ./hx-download "4.0.0-preview.2"
 # ./hx-download "4.0.0-preview.3"
 ./hx-download "4.0.0-preview.4"
-# ./hx-download "aws" "haxe_latest" "dev"
+./hx-download "aws" "latest" "dev"
 
 # Select default version
 # ./hx-select "3.4.7"
