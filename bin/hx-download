@@ -29,5 +29,5 @@ tar -xvf "$FILENAME.tar.gz"
 rm "$FILENAME.tar.gz"
 cd -
 
-rm -f "$ROOT/../versions/haxe_$TARGET"
-ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/haxe_$TARGET"
+rm -f "$ROOT/../versions/$TARGET"
+ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/$TARGET"

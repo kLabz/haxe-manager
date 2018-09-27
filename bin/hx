@@ -5,14 +5,12 @@ ROOT=$(dirname $(readlink -f $0))
 if [ ! -z "$1" ]; then
 	if [ -e "$ROOT/../versions/$1" ]; then
 		hx-select "$1"
-	elif [ -e "$ROOT/../versions/haxe_$1" ]; then
-		hx-select "haxe_$1"
 	else
 		echo "Haxe version not found: $1"
 	fi
 else
 	current=$(haxe -version 2>&1)
-	v=$(find "$ROOT/../versions/" -maxdepth 1 -name 'haxe_*' -printf "%f\n" | sort -r | fzf --prompt="Current: $current > ")
+	v=$(find "$ROOT/../versions/" -type l -printf "%f\n" | sort -r | fzf --prompt="Current: $current > ")
 
 	if [ ! -z "$v" ]; then
 		hx-select "$v"
