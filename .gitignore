@@ -1,6 +1,9 @@
+**/node_modules/*
+**/package-lock.json
 releases/
 versions/
 std
-bin/haxe
-bin/haxelib
-
+bin/*
+!bin/hx
+!bin/hx-download
+!bin/hx-select
