@@ -2,35 +2,25 @@
 
 ROOT=$(dirname $(readlink -f $0))
 
-cd "$ROOT/bin"
 echo "Please add $ROOT/bin to your PATH"
 echo "Please set HAXE_STD_PATH to $ROOT/std"
 
-if ! [ -e ../releases ]; then
-	mkdir ../releases
-fi
-
-if ! [ -e ../versions ]; then
-	mkdir ../versions
-fi
+mkdir -p "$ROOT/bin/releases"
+mkdir -p "$ROOT/bin/versions"
 
 # Install fzf if needed
 if ! [ -x "$(command -v fzf)" ]; then
+	cd "$ROOT/bin"
 	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-linux_amd64.tgz"
 	tar -xvf "fzf-0.17.4-linux_amd64.tgz"
 	rm "fzf-0.17.4-linux_amd64.tgz"
+	cd -
 fi
 
 # Download some versions
-./hx-download "3.4.7"
-# ./hx-download "4.0.0-preview.1"
-# ./hx-download "4.0.0-preview.2"
-# ./hx-download "4.0.0-preview.3"
-./hx-download "4.0.0-preview.4"
-./hx-download "aws" "latest" "dev"
+PATH=$PATH:$ROOT/bin hx-download "3.4.7"
+PATH=$PATH:$ROOT/bin hx-download "4.0.0-rc.2"
+PATH=$PATH:$ROOT/bin hx-download "latest"
 
 # Select default version
-# ./hx-select "3.4.7"
-./hx-select "4.0.0-preview.4"
-
-cd -
+PATH=$PATH:$ROOT/bin hx-select "4.0.0-rc.2"
