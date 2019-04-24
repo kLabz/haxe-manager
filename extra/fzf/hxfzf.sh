@@ -21,11 +21,11 @@ haxe --cwd `pwd` "$hxml" "/opt/haxe/extra/fzf/classpath.hxml" 2> /dev/null \
   | xargs -rn 1 realpath --relative-base="$pwd" -qs \
   | tr '\n' ' ' \
   | xargs ag --hidden --silent -f -g ".hx" \
-    --ignore "/usr/lib/haxe/std/cpp/*" \
-    --ignore "/usr/lib/haxe/std/cs/*" \
-    --ignore "/usr/lib/haxe/std/flash/*" \
-    --ignore "/usr/lib/haxe/std/java/*" \
-    --ignore "/usr/lib/haxe/std/hl/*" \
-    --ignore "/usr/lib/haxe/std/neko/*" \
-    --ignore "/usr/lib/haxe/std/php/*" \
-    --ignore "/usr/lib/haxe/std/python/*"
+    --ignore "/opt/haxe/std/cpp/*" \
+    --ignore "/opt/haxe/std/cs/*" \
+    --ignore "/opt/haxe/std/flash/*" \
+    --ignore "/opt/haxe/std/java/*" \
+    --ignore "/opt/haxe/std/hl/*" \
+    --ignore "/opt/haxe/std/neko/*" \
+    --ignore "/opt/haxe/std/php/*" \
+    --ignore "/opt/haxe/std/python/*"
