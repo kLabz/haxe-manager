@@ -5,6 +5,8 @@ import haxe.macro.Compiler;
 import haxe.macro.Context;
 import sys.FileSystem;
 
+using StringTools;
+
 class Watcher {
 	static function waitForChange():Void {
 		var watchedFolders = [];
@@ -17,7 +19,7 @@ class Watcher {
 
 		var cp = Context.getClassPath();
 		for (c in cp) {
-			if (c == '') continue;
+			if (c == '' || c.trim().startsWith('#')) continue;
 			c = FileSystem.absolutePath(c);
 
 			// Ignore watcher path
