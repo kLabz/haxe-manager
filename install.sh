@@ -5,8 +5,8 @@ ROOT=$(dirname $(readlink -f $0))
 echo "Please add $ROOT/bin to your PATH"
 echo "Please set HAXE_STD_PATH to $ROOT/std"
 
-mkdir -p "$ROOT/bin/releases"
-mkdir -p "$ROOT/bin/versions"
+mkdir -p "$ROOT/releases"
+mkdir -p "$ROOT/versions"
 
 # Install fzf if needed
 if ! [ -x "$(command -v fzf)" ]; then
