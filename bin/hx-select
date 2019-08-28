@@ -15,7 +15,20 @@ if [ ! -z "$1" ]; then
 		echo "Switched to $1"
 		haxe -version
 	else
-		echo "Cannot find haxe version $1"
+		if [ -e "$ROOT/../releases/$1" ]; then
+			rm -f "$ROOT/haxe"
+			rm -f "$ROOT/haxelib"
+			rm -f "$ROOT/../std"
+
+			ln -s "$ROOT/../releases/$1/haxe" "$ROOT/haxe"
+			ln -s "$ROOT/../releases/$1/haxelib" "$ROOT/haxelib"
+			ln -s "$ROOT/../releases/$1/std" "$ROOT/../std"
+
+			echo "Switched to $1"
+			haxe -version
+		else
+			echo "Cannot find haxe version $1"
+		fi
 	fi
 else
 	echo "Please specify a haxe version"
