@@ -20,6 +20,24 @@ elif [ "$1" == "aws" ]; then
 
 	URL="http://hxbuilds.s3-website-us-east-1.amazonaws.com/builds/haxe/linux64/haxe_$2.tar.gz"
 	FILENAME="haxe_$2"
+elif [ -f "$1" ]; then
+	TARGET=$2
+	FILE=$(realpath "$1")
+	OUTDIR=$(tar -tf "$FILE" | head -n 1)
+
+	if [ -z "$TARGET" ]; then
+		echo "Cannot install from local file without providing a version number";
+		exit 1;
+	fi
+
+	cd "$ROOT/../releases"
+	tar -xvf $FILE
+	cd -
+
+	rm -f "$ROOT/../versions/$TARGET"
+	ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/$TARGET"
+
+	exit 0;
 else
 	TARGET=$2
 
