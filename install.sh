@@ -19,8 +19,9 @@ fi
 
 # Download some versions
 PATH=$PATH:$ROOT/bin hx-download "3.4.7"
-PATH=$PATH:$ROOT/bin hx-download "4.0.0-rc.2"
+PATH=$PATH:$ROOT/bin hx-download "4.0.0"
+PATH=$PATH:$ROOT/bin hx-download "4.0.3"
 PATH=$PATH:$ROOT/bin hx-download "latest"
 
 # Select default version
-PATH=$PATH:$ROOT/bin hx-select "4.0.0-rc.2"
+PATH=$PATH:$ROOT/bin hx-select "4.0.3"
