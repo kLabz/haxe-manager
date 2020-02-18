@@ -9,16 +9,16 @@ if [ "$1" == "latest" ]; then
 		TARGET="dev"
 	fi
 
-	URL="http://hxbuilds.s3-website-us-east-1.amazonaws.com/builds/haxe/linux64/haxe_latest.tar.gz"
+	URL="https://build.haxe.org/builds/haxe/linux64/haxe_latest.tar.gz"
 	FILENAME="haxe_latest"
-elif [ "$1" == "aws" ]; then
+elif [ "$1" == "nightly" ]; then
 	TARGET=$3
 
 	if [ -z "$TARGET" ]; then
 		TARGET=$2
 	fi
 
-	URL="http://hxbuilds.s3-website-us-east-1.amazonaws.com/builds/haxe/linux64/haxe_$2.tar.gz"
+	URL="https://build.haxe.org/builds/haxe/linux64/haxe_$2.tar.gz"
 	FILENAME="haxe_$2"
 elif [ -f "$1" ]; then
 	TARGET=$2
@@ -50,6 +50,7 @@ else
 fi
 
 cd "$ROOT/../releases"
+rm -f "$FILENAME.tar.gz"
 wget "$URL"
 OUTDIR=$(tar -tf "$FILENAME.tar.gz" | head -n 1)
 tar -xf "$FILENAME.tar.gz"
