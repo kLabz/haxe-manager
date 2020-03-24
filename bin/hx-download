@@ -2,7 +2,7 @@
 
 ROOT=$(dirname $(readlink -f $0))
 
-if [ "$1" == "latest" ]; then
+if [ "$1" = "latest" ]; then
 	TARGET=$2
 
 	if [ -z "$TARGET" ]; then
@@ -11,7 +11,7 @@ if [ "$1" == "latest" ]; then
 
 	URL="https://build.haxe.org/builds/haxe/linux64/haxe_latest.tar.gz"
 	FILENAME="haxe_latest"
-elif [ "$1" == "nightly" ]; then
+elif [ "$1" = "nightly" ]; then
 	TARGET=$3
 
 	if [ -z "$TARGET" ]; then
