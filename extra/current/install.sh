@@ -1,7 +1,7 @@
 #!/bin/sh
 
-ROOT=$(dirname $(readlink -f $0))
-HAXE_MANAGER_ROOT=$(readlink -f "$ROOT/../..")
+ROOT=$(dirname $(greadlink -f $0))
+HAXE_MANAGER_ROOT=$(greadlink -f "$ROOT/../..")
 
 cd $ROOT
 

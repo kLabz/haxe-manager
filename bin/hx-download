@@ -1,6 +1,16 @@
 #!/bin/sh
 
-ROOT=$(dirname $(readlink -f $0))
+ROOT=$(dirname $(greadlink -f $0))
+
+BUILD_OS="linux64"
+BUILD_OS2="linux64"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	BUILD_OS="osx"
+	BUILD_OS2="mac"
+#elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # default
+fi
 
 if [ "$1" = "latest" ]; then
 	TARGET=$2
@@ -9,7 +19,7 @@ if [ "$1" = "latest" ]; then
 		TARGET="dev"
 	fi
 
-	URL="https://build.haxe.org/builds/haxe/linux64/haxe_latest.tar.gz"
+	URL="https://build.haxe.org/builds/haxe/$BUILD_OS2/haxe_latest.tar.gz"
 	FILENAME="haxe_latest"
 elif [ "$1" = "nightly" ]; then
 	TARGET=$3
@@ -18,7 +28,7 @@ elif [ "$1" = "nightly" ]; then
 		TARGET=$2
 	fi
 
-	URL="https://build.haxe.org/builds/haxe/linux64/haxe_$2.tar.gz"
+	URL="https://build.haxe.org/builds/haxe/$BUILD_OS2/haxe_$2.tar.gz"
 	FILENAME="haxe_$2"
 elif [ -f "$1" ]; then
 	TARGET=$2
@@ -45,8 +55,8 @@ else
 		TARGET=$1
 	fi
 
-	URL="https://github.com/HaxeFoundation/haxe/releases/download/$1/haxe-$1-linux64.tar.gz"
-	FILENAME="haxe-$1-linux64"
+	URL="https://github.com/HaxeFoundation/haxe/releases/download/$1/haxe-$1-$BUILD_OS.tar.gz"
+	FILENAME="haxe-$1-$BUILD_OS"
 fi
 
 cd "$ROOT/../releases"

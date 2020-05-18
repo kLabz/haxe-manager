@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ROOT=$(dirname $(readlink -f $0))
+ROOT=$(dirname $(greadlink -f $0))
 
 cd $ROOT
 

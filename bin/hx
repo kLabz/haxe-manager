@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ROOT=$(dirname $(readlink -f $0))
+ROOT=$(dirname $(greadlink -f $0))
 
 if [ ! -z "$1" ]; then
 	if [ -e "$ROOT/../versions/$1" ]; then
@@ -10,7 +10,7 @@ if [ ! -z "$1" ]; then
 	fi
 else
 	current=$(haxe -version 2>&1)
-	v=$(find "$ROOT/../versions/" -type l -printf "%f\n" | sort -r | fzf --prompt="Current: $current > ")
+	v=$(find "$ROOT/../versions/" -type l -exec basename {} \; | sort -r | fzf --prompt="Current: $current > ")
 
 	if [ ! -z "$v" ]; then
 		hx-select "$v"
@@ -18,3 +18,4 @@ else
 fi
 
 
+# find: -printf: unknown primary or operator
