@@ -10,7 +10,7 @@ if [ ! -z "$1" ]; then
 	fi
 else
 	current=$(haxe -version 2>&1)
-	v=$(find "$ROOT/../versions/" -type l -printf "%f\n" | sort -r | fzf --prompt="Current: $current > ")
+	v=$(find "$ROOT/../versions/" -type l -exec basename {} \; | sort -r | fzf --prompt="Current: $current > ")
 
 	if [ ! -z "$v" ]; then
 		hx-select "$v"
