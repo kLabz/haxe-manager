@@ -2,7 +2,10 @@
 
 ROOT=$(dirname $(readlink -f $0))
 
-if [ "$1" = "latest" ]; then
+if [ -z "$1" ]; then
+	echo "Missing argument(s) (TODO: help message)"
+	exit 1
+elif [ "$1" = "latest" ]; then
 	TARGET=$2
 
 	if [ -z "$TARGET" ]; then

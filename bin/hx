@@ -2,7 +2,10 @@
 
 ROOT=$(dirname $(readlink -f $0))
 
-if [ ! -z "$1" ]; then
+if [ "$1" = "download" ]; then
+	shift
+	hx-download "$@"
+elif [ ! -z "$1" ]; then
 	if [ -e "$ROOT/../versions/$1" ]; then
 		hx-select "$1"
 	else
@@ -16,5 +19,3 @@ else
 		hx-select "$v"
 	fi
 fi
-
-
