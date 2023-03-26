@@ -7,3 +7,4 @@ bin/*
 !bin/hx
 !bin/hx-download
 !bin/hx-select
+!bin/make-haxe

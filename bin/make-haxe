@@ -1,0 +1,23 @@
+#!/bin/sh
+
+ROOT="$(dirname $(readlink -f $0))/.."
+# TODO: make sure we're on haxe repository
+
+status=$(git status --porcelain | grep -v "^??")
+if [ -z "$status" ]; then
+	ref=$(git rev-parse --short HEAD)
+	cacheDir="$ROOT/builds/$ref"
+
+	if [ -d "$cacheDir" ]; then
+		echo "Use haxe and haxelib from cache for ref $ref"
+		cp -f "$cacheDir/haxe" .
+		cp -f "$cacheDir/haxelib" .
+	else
+		make haxe && \
+			mkdir "$cacheDir" && \
+			cp ./haxe "$cacheDir" && \
+			cp ./haxelib "$cacheDir"
+	fi
+else
+	make haxe
+fi
