@@ -36,7 +36,7 @@ Usage: hx-download <VERSION> [AS_NAME]
 
 ### `hxfzf`
 
-Creates a list of all `.hx` files in all your classpath, to be passed to `fzf`
+Prints a list of all `.hx` files in all your classpath, to be passed to `fzf`
 or other tools.
 
 Usage: `hxfzf [compile.hxml]` (will default to `build.hxml`)

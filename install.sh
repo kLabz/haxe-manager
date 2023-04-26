@@ -2,9 +2,6 @@
 
 ROOT=$(dirname $(readlink -f $0))
 
-echo "Please add $ROOT/bin to your PATH"
-echo "Please set HAXE_STD_PATH to $ROOT/std"
-
 mkdir -p "$ROOT/releases"
 mkdir -p "$ROOT/versions"
 
@@ -27,3 +24,6 @@ if [ -z "$SKIP_DEFAULTS" ]; then
 	# Select default version
 	PATH=$PATH:$ROOT/bin hx-select "4.3.0"
 fi
+
+echo "Please add $ROOT/bin to your PATH"
+echo "Please set HAXE_STD_PATH to $ROOT/std"
