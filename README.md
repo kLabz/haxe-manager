@@ -1,6 +1,7 @@
 # Haxe Manager
 
-Easily download and switch haxe versions on unix/WSL (currently only uses the linux64 target).
+Easily download and switch haxe versions on UNIX (currently tested on
+`ubuntu-latest` and `macos-latest` via github actions).
 
 Run `install.sh` and update `PATH` / `HAXE_STD_PATH` as requested.
 
