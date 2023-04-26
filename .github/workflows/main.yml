@@ -3,7 +3,13 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
     env:
       HAXE_STD_PATH: "${{ github.workspace }}/std"
     steps:
