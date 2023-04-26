@@ -9,6 +9,7 @@ if [ -z "$HAXE_DEV_PATH" ]; then
 	exit 1
 fi
 
+HAXE_DEV_PATH=$(realpath "$HAXE_DEV_PATH")
 if [ ! -d "$HAXE_DEV_PATH" ]; then
 	echo "Cannot find path to haxe repository"
 	exit 1
@@ -19,16 +20,20 @@ if [ -z "$RELEASE_NAME" ]; then
 	exit 1
 fi
 
-RELEASE_NAME="haxe_${RELEASE_NAME}_local"
+RELEASE_PATH="haxe_${RELEASE_NAME}_local"
 
-if [ -d "$HAXE_MANAGER_ROOT/releases/$RELEASE_NAME" ]; then
-	exit 0
+if [ -d "$HAXE_MANAGER_ROOT/releases/$RELEASE_PATH" ]; then
+	echo "$RELEASE_NAME already exists; overwriting..."
+	rm -rf "$HAXE_MANAGER_ROOT/releases/$RELEASE_PATH"
 fi
 
-mkdir -p $HAXE_MANAGER_ROOT/releases/$RELEASE_NAME
-cd $HAXE_MANAGER_ROOT/releases/$RELEASE_NAME
+mkdir -p "$HAXE_MANAGER_ROOT/releases/$RELEASE_PATH"
+cd "$HAXE_MANAGER_ROOT/releases/$RELEASE_PATH"
+cp -R "$HAXE_DEV_PATH/std" .
+cp "$HAXE_DEV_PATH/haxe" .
+cp "$HAXE_DEV_PATH/haxelib" .
 
-cp -R $HAXE_DEV_PATH/std .
-cp $HAXE_DEV_PATH/haxe .
-cp $HAXE_DEV_PATH/haxelib .
-cd -
+unlink "$HAXE_MANAGER_ROOT/versions/$RELEASE_NAME" 2> /dev/null
+ln -s "$HAXE_MANAGER_ROOT/releases/$RELEASE_PATH" "$HAXE_MANAGER_ROOT/versions/$RELEASE_NAME"
+
+cd - > /dev/null

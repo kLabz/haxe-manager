@@ -8,4 +8,5 @@ cd $ROOT
 sed 's,"/opt/haxe","'"$HAXE_MANAGER_ROOT"'",' hx-mklocal.sh > ../../bin/hx-mklocal
 chmod +x ../../bin/hx-mklocal
 
-cd -
+echo "Successfully installed command hx-mklocal"
+cd - > /dev/null

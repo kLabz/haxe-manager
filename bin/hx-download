@@ -58,7 +58,6 @@ elif [ "$1" = "nightly" ] || [ "$1" = "aws" ]; then
 
 # Install a local release file
 # Technically not a download, and potentially unsafe, but can be of use
-# Should probably be extrated as another tool that also supports folders
 # Not documented on purpose
 elif [ -f "$1" ]; then
 	FILE=$(realpath "$1")
