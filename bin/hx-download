@@ -2,9 +2,39 @@
 
 ROOT=$(dirname $(readlink -f $0))
 
+get_haxe_version () {
+	local OUTDIR="$1"
+	local VERSION=$("$ROOT/../releases/$OUTDIR/haxe" --version)
+
+	# Append revision for 4.3.0-rc.1 nightlies that were missing it
+	if [ "$VERSION" = "4.3.0-rc.1" ]; then
+		REV=$(echo "$OUTDIR" | sed -E 's/^haxe_20[0-9]+_([a-f0-9]{5,})\/$/\1/')
+		if [ ! -z "$REV" ] && [ ! "$REV" = "$OUTDIR" ]; then
+			VERSION="$VERSION+$REV"
+		fi
+	fi
+
+	echo "$VERSION"
+}
+
 if [ -z "$1" ]; then
-	echo "Missing argument(s) (TODO: help message)"
+	echo "hx-download: missing argument(s)"
+	echo ""
+	echo "Usage: hx-download <VERSION> [AS_NAME]"
+	echo "       Download official release VERSION (e.g., 4.3.0)"
+	echo "       Save as AS_NAME if provided or use version number"
+	echo ""
+	echo "   or: hx-download latest [AS_NAME]"
+	echo "       Download latest nightly"
+	echo "       Save as AS_NAME if provided or use version number (with revision)"
+	echo ""
+	echo "   or: hx-download nightly <VERSION> [AS_NAME]"
+	echo "   or: hx-download aws <VERSION> [AS_NAME]"
+	echo "       Download specific nightly VERSION (e.g., 2023-01-22_development_dd5e467)"
+	echo "       Save as AS_NAME if provided or use version number (with revision)"
 	exit 1
+
+# Download latest nightly
 elif [ "$1" = "latest" ]; then
 	TARGET=$2
 
@@ -14,7 +44,9 @@ elif [ "$1" = "latest" ]; then
 
 	URL="https://build.haxe.org/builds/haxe/linux64/haxe_latest.tar.gz"
 	FILENAME="haxe_latest"
-elif [ "$1" = "nightly" ]; then
+
+# Download a specific nightly
+elif [ "$1" = "nightly" ] || [ "$1" = "aws" ]; then
 	TARGET=$3
 
 	if [ -z "$TARGET" ]; then
@@ -23,24 +55,33 @@ elif [ "$1" = "nightly" ]; then
 
 	URL="https://build.haxe.org/builds/haxe/linux64/haxe_$2.tar.gz"
 	FILENAME="haxe_$2"
-elif [ -f "$1" ]; then
-	TARGET=$2
-	FILE=$(realpath "$1")
-	OUTDIR=$(tar -tf "$FILE" | head -n 1)
 
-	if [ -z "$TARGET" ]; then
-		echo "Cannot install from local file without providing a version number";
-		exit 1;
-	fi
+# Install a local release file
+# Technically not a download, and potentially unsafe, but can be of use
+# Should probably be extrated as another tool that also supports folders
+# Not documented on purpose
+elif [ -f "$1" ]; then
+	FILE=$(realpath "$1")
+
+	# TODO make sure this looks good
+	OUTDIR=$(tar -tf "$FILE" | head -n 1)
 
 	cd "$ROOT/../releases"
 	tar -xf $FILE
-	cd -
+	cd - > /dev/null
 
-	rm -f "$ROOT/../versions/$TARGET"
+	TARGET=$2
+	if [ -z "$TARGET" ]; then
+		TARGET="$(get_haxe_version "$OUTDIR")"
+	fi
+
+	unlink "$ROOT/../versions/$TARGET" 2> /dev/null
 	ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/$TARGET"
 
+	echo "Installed version $TARGET"
 	exit 0;
+
+# Install an official release
 else
 	TARGET=$2
 
@@ -55,10 +96,26 @@ fi
 cd "$ROOT/../releases"
 rm -f "$FILENAME.tar.gz"
 wget "$URL"
-OUTDIR=$(tar -tf "$FILENAME.tar.gz" | head -n 1)
-tar -xf "$FILENAME.tar.gz"
-rm "$FILENAME.tar.gz"
-cd -
 
-rm -f "$ROOT/../versions/$TARGET"
-ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/$TARGET"
+if [ "$?" -eq "0" ]; then
+	OUTDIR=$(tar -tf "$FILENAME.tar.gz" | head -n 1)
+	tar -xf "$FILENAME.tar.gz"
+	rm "$FILENAME.tar.gz"
+	cd - > /dev/null
+
+	VERSION="$TARGET"
+	if [ "$FILENAME" = "haxe_latest" ] || [ -z "$TARGET" ]; then
+		VERSION="$(get_haxe_version "$OUTDIR")"
+	fi
+	unlink "$ROOT/../versions/$VERSION" 2> /dev/null
+	ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/$VERSION"
+
+	if [ "$FILENAME" = "haxe_latest" ]; then
+		unlink "$ROOT/../versions/$TARGET" 2> /dev/null
+		ln -s "$ROOT/../releases/$OUTDIR" "$ROOT/../versions/$TARGET"
+	fi
+
+	echo "Downloaded version $VERSION"
+else
+	echo "Failed to download $FILENAME"
+fi
