@@ -8,4 +8,5 @@ cd $ROOT
 sed 's,"/opt/haxe","'"$HAXE_MANAGER_ROOT"'",' hx-upgrade.sh > ../../bin/hx-upgrade
 chmod +x ../../bin/hx-upgrade
 
-cd -
+echo "Successfully installed command hx-upgrade"
+cd - > /dev/null

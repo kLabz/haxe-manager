@@ -11,4 +11,5 @@ sed 's,"/opt/haxe","'"$HAXE_MANAGER_ROOT"'",' ++haxe.sh > ../../bin/++haxe
 chmod +x ./parse.js
 chmod +x ../../bin/++haxe
 
-cd -
+echo "Successfully installed command ++haxe"
+cd - > /dev/null

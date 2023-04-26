@@ -7,4 +7,5 @@ cd $ROOT
 cp rofi-haxe.sh ../../bin/rofi-haxe
 chmod +x ../../bin/rofi-haxe
 
-cd -
+echo "Successfully installed command rofi-haxe"
+cd - > /dev/null
