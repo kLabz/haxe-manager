@@ -8,9 +8,15 @@ mkdir -p "$ROOT/versions"
 # Install fzf if needed
 if ! [ -x "$(command -v fzf)" ]; then
 	cd "$ROOT/bin"
-	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-linux_amd64.tgz"
-	tar -xf "fzf-0.17.4-linux_amd64.tgz"
-	rm "fzf-0.17.4-linux_amd64.tgz"
+
+	BUILD_OS="linux"
+	if [[ "$OSTYPE" == "darwin"* ]]; then
+		BUILD_OS="darwin"
+	fi
+
+	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-${BUILD_OS}_amd64.tgz"
+	tar -xf "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
+	rm "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
 	cd - > /dev/null
 fi
 
