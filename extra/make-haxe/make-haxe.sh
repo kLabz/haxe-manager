@@ -1,12 +1,12 @@
 #!/bin/sh
 
-ROOT="$(dirname $(readlink -f $0))/.."
+HAXE_MANAGER_ROOT="/opt/haxe"
 # TODO: make sure we're on haxe repository
 
 status=$(git status --porcelain --ignore-submodules | grep -v "^??")
 if [ -z "$status" ] || [ "$1" = "--force-cache" ]; then
 	ref=$(git rev-parse --short HEAD)
-	cacheDir="$ROOT/builds/$ref"
+	cacheDir="$HAXE_MANAGER_ROOT/builds/$ref"
 
 	if [ -d "$cacheDir" ]; then
 		echo "Use haxe and haxelib from cache for ref $ref"
