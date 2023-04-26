@@ -4,7 +4,7 @@ ROOT="$(dirname $(readlink -f $0))/.."
 # TODO: make sure we're on haxe repository
 
 status=$(git status --porcelain --ignore-submodules | grep -v "^??")
-if [ -z "$status" ]; then
+if [ -z "$status" ] || [ "$1" = "--force-cache" ]; then
 	ref=$(git rev-parse --short HEAD)
 	cacheDir="$ROOT/builds/$ref"
 
@@ -13,11 +13,15 @@ if [ -z "$status" ]; then
 		cp -f "$cacheDir/haxe" .
 		cp -f "$cacheDir/haxelib" .
 	else
-		make haxe && \
-			mkdir -p "$cacheDir" && \
-			cp ./haxe "$cacheDir" && \
-			cp ./haxelib "$cacheDir"
+		ADD_REVISION=1 make haxe && \
+		mkdir -p "$cacheDir" && \
+		cp ./haxe "$cacheDir" && \
+		cp ./haxelib "$cacheDir"
+
+		if [ ! -z "$status" ]; then
+			git diff --patch HEAD > "$cacheDir/status.patch"
+		fi
 	fi
 else
-	make haxe
+	ADD_REVISION=1 make haxe
 fi

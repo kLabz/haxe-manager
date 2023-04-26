@@ -2,6 +2,7 @@
 **/package-lock.json
 releases/
 versions/
+builds/
 std
 bin/*
 !bin/hx
