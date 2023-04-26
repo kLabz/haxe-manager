@@ -1,2 +1,3 @@
 -cp /opt/haxe/extra/fzf/src/
---macro haxe.cli.CliTools.getClasspath()
+--macro ClassPathMacro.run()
+--no-output
