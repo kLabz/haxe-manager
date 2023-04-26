@@ -1,0 +1,39 @@
+name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HAXE_STD_PATH: "${{ github.workspace }}/std"
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Install haxe-manager
+        run: |
+          sh ./install.sh
+
+      - name: Add to PATH
+        run: |
+          echo "${GITHUB_WORKSPACE}/bin" >> $GITHUB_PATH
+
+      - name: Check env
+        run: |
+          echo $PATH
+          echo $GITHUB_PATH
+          echo $HAXE_STD_PATH
+
+      - name: Check base usage
+        run: |
+          haxe --version
+          hx 4.2.5
+          hx-download latest
+          hx dev
+
+      - name: Install extra tools
+        run: |
+          sh ./extra/install-all.sh
+          ls -Al bin/
+
+      - name: Check list-haxe-versions
+        run: list-haxe-versions
