@@ -9,7 +9,7 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-          - windows-latest
+          # - windows-latest
     runs-on: ${{ matrix.os }}
     env:
       HAXE_STD_PATH: "${{ github.workspace }}/current/std"
@@ -19,7 +19,8 @@ jobs:
       - name: Add to PATH
         run: |
           # TODO: unix vs windows..
-          echo "${env:GITHUB_WORKSPACE}/bin" | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
+          echo "${GITHUB_WORKSPACE}/bin" >> $GITHUB_PATH
+          # echo "${env:GITHUB_WORKSPACE}/bin" | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
 
       - name: Install haxe-manager
         run: |
@@ -36,10 +37,13 @@ jobs:
         run: |
           # haxe --version
           # hx 4.2.5
-          # hx-download latest
           # hx dev
-          hx-select dev
           hx-download latest
+          ls -Al releases
+          hx-download 4.3.4
+          ls -Al releases
+          hx-select dev
+          haxe --version
 
       # TODO: unix only
       # - name: Install extra tools
