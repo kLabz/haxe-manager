@@ -39,6 +39,8 @@ jobs:
           # hx-download latest
           # hx dev
           hx-select.bat dev
+          hx-select-test dev
+          hx-download latest
 
       # TODO: unix only
       # - name: Install extra tools

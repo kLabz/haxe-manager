@@ -7,22 +7,28 @@ inline var currentDir = "current";
 inline var versionsDir = "versions";
 inline var releasesDir = "releases";
 
-function getBuildUrl(v:String):String {
+function getBuildUrl(v:String):Array<String> {
 	// TODO: other OS, and arch variants
 	return switch Sys.systemName() {
-		case "Linux": 'https://build.haxe.org/builds/haxe/linux64/haxe_$v.tar.gz';
-		case "Mac": 'https://build.haxe.org/builds/haxe/mac/haxe_$v.tar.gz';
-		case "Windows": 'https://build.haxe.org/builds/haxe/windows64/haxe_$v.zip';
+		case "Linux":
+			['https://build.haxe.org/builds/haxe/linux64/', 'haxe_$v.tar.gz'];
+		case "Mac":
+			['https://build.haxe.org/builds/haxe/mac/', 'haxe_$v.tar.gz'];
+		case "Windows":
+			['https://build.haxe.org/builds/haxe/windows64/', 'haxe_$v.zip'];
 		case os: throw 'OS $os is not supported (yet)';
 	}
 }
 
-function getReleaseUrl(v:String):String {
+function getReleaseUrl(v:String):Array<String> {
 	// TODO: other OS, and arch variants
 	return switch Sys.systemName() {
-		case "Linux": 'https://github.com/HaxeFoundation/haxe/releases/download/$v/haxe-$v-linux64.tar.gz';
-		case "Mac": 'https://github.com/HaxeFoundation/haxe/releases/download/$v/haxe-$v-osx.tar.gz';
-		case "Windows": 'https://github.com/HaxeFoundation/haxe/releases/download/$v/haxe-$v-windows64.zip';
+		case "Linux":
+			['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-linux64.tar.gz'];
+		case "Mac":
+			['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-osx.tar.gz'];
+		case "Windows":
+			['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-windows64.zip'];
 		case os: throw 'OS $os is not supported (yet)';
 	}
 }

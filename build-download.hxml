@@ -1,4 +1,4 @@
 common-build.hxml
+--hxb build/download.hxb
 HaxeDownload
-HaxeSelect
 --interp
