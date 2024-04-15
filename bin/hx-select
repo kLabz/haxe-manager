@@ -1,36 +1,9 @@
 #!/bin/sh
 
-ROOT=$(dirname $(readlink -f $0))
-
-if [ ! -z "$1" ]; then
-	if [ -e "$ROOT/../versions/$1" ]; then
-		rm -f "$ROOT/haxe"
-		rm -f "$ROOT/haxelib"
-		rm -f "$ROOT/../std"
-
-		ln -s "$ROOT/../versions/$1/haxe" "$ROOT/haxe"
-		ln -s "$ROOT/../versions/$1/haxelib" "$ROOT/haxelib"
-		ln -s "$ROOT/../versions/$1/std" "$ROOT/../std"
-
-		echo "Switched to $1"
-		haxe -version
-	else
-		if [ -e "$ROOT/../releases/$1" ]; then
-			rm -f "$ROOT/haxe"
-			rm -f "$ROOT/haxelib"
-			rm -f "$ROOT/../std"
-
-			ln -s "$ROOT/../releases/$1/haxe" "$ROOT/haxe"
-			ln -s "$ROOT/../releases/$1/haxelib" "$ROOT/haxelib"
-			ln -s "$ROOT/../releases/$1/std" "$ROOT/../std"
-
-			echo "Switched to $1"
-			haxe -version
-		else
-			echo "Cannot find haxe version $1"
-		fi
-	fi
-else
-	echo "Please specify a haxe version"
+ROOT=$(dirname $(readlink -f $0))/..
+BUILD_OS="linux64"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	BUILD_OS="mac"
 fi
 
+HAXE_STD_PATH=$ROOT/std $ROOT/build/${BUILD_OS}_569e52e/haxe --cwd $ROOT run-select.hxml $@

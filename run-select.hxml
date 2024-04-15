@@ -1,0 +1,3 @@
+common.hxml
+--hxb-lib build/select.hxb
+--run HaxeSelect
