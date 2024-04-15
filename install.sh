@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ROOT=$(dirname $(readlink -f $0))
 
@@ -14,6 +14,8 @@ if ! [ -x "$(command -v fzf)" ]; then
 		BUILD_OS="darwin"
 	fi
 
+	echo "OSTYPE=$OSTYPE, BUILD_OS=$BUILD_OS"
+
 	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-${BUILD_OS}_amd64.tgz"
 	tar -xf "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
 	rm "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
@@ -22,13 +24,11 @@ fi
 
 if [ -z "$SKIP_DEFAULTS" ]; then
 	# Download some versions
-	PATH=$PATH:$ROOT/bin hx-download "3.4.7"
-	PATH=$PATH:$ROOT/bin hx-download "4.2.5"
-	PATH=$PATH:$ROOT/bin hx-download "4.3.0"
+	PATH=$PATH:$ROOT/bin hx-download "4.3.4"
 	PATH=$PATH:$ROOT/bin hx-download "latest"
 
 	# Select default version
-	PATH=$PATH:$ROOT/bin hx-select "4.3.0"
+	PATH=$PATH:$ROOT/bin hx-select "4.3.4"
 fi
 
 echo "Please add $ROOT/bin to your PATH"
