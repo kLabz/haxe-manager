@@ -47,6 +47,7 @@ private function unlinkCurrent():Void {
 }
 
 private function link(dir:String):Void {
+	if (!FileSystem.exists(currentDir)) FileSystem.createDirectory(currentDir);
 	FileSync.symlink(Path.join(["..", dir, "haxe"]), Path.join([currentDir, "haxe"]));
 	FileSync.symlink(Path.join(["..", dir, "haxelib"]), Path.join([currentDir, "haxelib"]));
 	FileSync.symlink(Path.join(["..", dir, "std"]), Path.join([currentDir, "std"]));
