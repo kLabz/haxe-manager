@@ -9,9 +9,10 @@ inline var releasesDir = "releases";
 
 function getBuildUrl(v:String):Array<String> {
 	// TODO: other OS, and arch variants
+	// TODO: fix https
 	return switch Sys.systemName() {
 		case "Linux":
-			['https://build.haxe.org/builds/haxe/linux64/', 'haxe_$v.tar.gz'];
+			['http://build.haxe.org/builds/haxe/linux64/', 'haxe_$v.tar.gz'];
 		case "Mac":
 			['https://build.haxe.org/builds/haxe/mac/', 'haxe_$v.tar.gz'];
 		case "Windows":

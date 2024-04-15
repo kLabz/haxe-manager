@@ -1,4 +1,7 @@
+import haxe.io.Path;
 import sys.FileSystem;
+import sys.Http;
+import sys.io.File;
 
 class HaxeDownload {
 	public static function main() {
@@ -35,6 +38,80 @@ class HaxeDownload {
 
 	static function install(url:String, filename:String, alias:String):Void {
 		trace('TODO: download file $filename as $alias from $url$filename');
+
+		var req = new Http('$url$filename');
+		req.setHeader("User-Agent", ""); // or any user-agent
+		req.onBytes = function(bytes) {
+			// trace("On bytes");
+			// for (k=>v in req.responseHeaders) trace(k,v);
+
+			if (req.responseHeaders.exists("Location")) {
+				final newUrl = req.responseHeaders.get("Location");
+				// trace(url + filename);
+				trace(newUrl);
+
+				var req2 = new Http(newUrl);
+				req2.setHeader("User-Agent", ""); // or any user-agent
+				// req2.setHeader("X-GitHub-Request-Id", req.responseHeaders.get("X-GitHub-Request-Id"));
+				req2.onBytes = function(bytes) {
+					// trace("On bytes");
+					trace(req2.responseHeaders);
+					final out = Path.join([Utils.releasesDir, filename]);
+					trace('Save to $out');
+					File.saveBytes(out, bytes);
+				};
+
+				req2.onError = function(msg) {
+					trace("Error");
+					trace(req2.responseHeaders);
+					trace(msg);
+					throw msg;
+				};
+
+				trace('Go (redirection)');
+				req2.request();
+
+				// var client = new http.HttpClient();
+				// client.get(newUrl, null, [
+				// 	"X-GitHub-Request-Id" => req.responseHeaders.get("X-GitHub-Request-Id")
+				// ]).then(res -> {
+				// 	trace("On bytes");
+				// 	final out = Path.join([Utils.releasesDir, filename]);
+				// 	trace('Save to $out');
+				// 	File.saveBytes(out, res.response.body);
+				// }, error -> {
+				// 	trace("error");
+				// 	trace(error.message);
+				// 	throw error;
+				// });
+			} else {
+				final out = Path.join([Utils.releasesDir, filename]);
+				trace('Save to $out');
+				File.saveBytes(out, bytes);
+			}
+		};
+
+		req.onError = function(msg) {
+			trace("Error");
+			trace(req.responseHeaders);
+			trace(msg);
+			throw msg;
+		};
+
+		trace('Go');
+		req.request();
+
+		// var client = new http.HttpClient();
+		// client.get('$url$filename').then(res -> {
+		// 	trace("On bytes");
+		// 	final out = Path.join([Utils.releasesDir, filename]);
+		// 	trace('Save to $out');
+		// 	File.saveBytes(out, res.response.body);
+		// }, error -> {
+		// 	trace("error");
+		// 	trace(error);
+		// 	throw error;
+		// });
 	}
 
 	static function displayUsage() {
