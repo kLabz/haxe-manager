@@ -33,7 +33,7 @@ jobs:
       - name: Check base usage (unix)
         if: matrix.os != 'windows_latest'
         run: |
-          haxe --version
+          # haxe --version
           hx 4.2.5
           hx-download latest
           hx dev
@@ -41,7 +41,7 @@ jobs:
       - name: Check base usage (windows)
         if: matrix.os == 'windows_latest'
         run: |
-          haxe.exe --version
+          # haxe.exe --version
           # hx 4.2.5
           # hx-download latest
           hx dev
