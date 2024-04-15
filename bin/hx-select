@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ROOT=$(dirname $(readlink -f $0))/..
 BUILD_OS="linux64"

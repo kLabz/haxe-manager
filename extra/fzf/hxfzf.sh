@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Get local dir
 pwd=$(pwd)
