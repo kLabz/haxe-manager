@@ -5,8 +5,8 @@ versions/
 builds/
 current/
 bin/*
-!bin/hx
+!bin/hx*
 !bin/haxe
 !bin/haxelib
-!bin/hx-download
-!bin/hx-select
+!bin/hx-download*
+!bin/hx-select*
