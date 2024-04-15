@@ -9,20 +9,23 @@ mkdir -p "$ROOT/versions"
 if ! [ -x "$(command -v fzf)" ]; then
 	cd "$ROOT/bin"
 
-	BUILD_OS="linux"
-	if [[ "$OSTYPE" == "darwin"* ]]; then
-		BUILD_OS="darwin"
+	if [[ "$OSTYPE" == "msys" ]]; then
+		echo "No fzf support for windows (yet)"
+	else
+		BUILD_OS="linux"
+		if [[ "$OSTYPE" == "darwin"* ]]; then
+			BUILD_OS="darwin"
+		fi
+
+		wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-${BUILD_OS}_amd64.tgz"
+		tar -xf "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
+		rm "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
+		cd - > /dev/null
 	fi
-
-	echo "OSTYPE=$OSTYPE, BUILD_OS=$BUILD_OS"
-
-	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-${BUILD_OS}_amd64.tgz"
-	tar -xf "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
-	rm "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
-	cd - > /dev/null
 fi
 
-if [ -z "$SKIP_DEFAULTS" ]; then
+# TODO: properly parse args
+if [ -z "$1" ]; then
 	# Download some versions
 	PATH=$PATH:$ROOT/bin hx-download "4.3.4"
 	PATH=$PATH:$ROOT/bin hx-download "latest"

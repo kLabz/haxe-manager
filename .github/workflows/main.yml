@@ -18,7 +18,7 @@ jobs:
 
       - name: Install haxe-manager
         run: |
-          sh ./install.sh
+          sh ./install.sh --skip-defaults
 
       - name: Add to PATH
         run: |
@@ -30,17 +30,28 @@ jobs:
           echo $GITHUB_PATH
           echo $HAXE_STD_PATH
 
-      - name: Check base usage
+      - name: Check base usage (unix)
+        if: matrix.os != 'windows_latest'
         run: |
           haxe --version
           hx 4.2.5
           hx-download latest
           hx dev
 
+      - name: Check base usage (windows)
+        if: matrix.os == 'windows_latest'
+        run: |
+          haxe.exe --version
+          # hx 4.2.5
+          # hx-download latest
+          hx dev
+
       - name: Install extra tools
+        if: matrix.os != 'windows_latest'
         run: |
           sh ./extra/install-all.sh
           ls -Al bin/
 
       - name: Check list-haxe-versions
+        if: matrix.os != 'windows_latest'
         run: list-haxe-versions
