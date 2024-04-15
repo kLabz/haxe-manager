@@ -32,4 +32,4 @@ if [ -z "$SKIP_DEFAULTS" ]; then
 fi
 
 echo "Please add $ROOT/bin to your PATH"
-echo "Please set HAXE_STD_PATH to $ROOT/std"
+echo "Please set HAXE_STD_PATH to $ROOT/current/std"

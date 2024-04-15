@@ -3,8 +3,10 @@
 releases/
 versions/
 builds/
-std
+current/
 bin/*
 !bin/hx
+!bin/haxe
+!bin/haxelib
 !bin/hx-download
 !bin/hx-select

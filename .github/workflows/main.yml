@@ -11,7 +11,7 @@ jobs:
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     env:
-      HAXE_STD_PATH: "${{ github.workspace }}/std"
+      HAXE_STD_PATH: "${{ github.workspace }}/current/std"
     steps:
       - uses: actions/checkout@main
 

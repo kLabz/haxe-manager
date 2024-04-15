@@ -3,6 +3,7 @@ import haxe.io.Path;
 import sys.FileSystem;
 
 inline var binDir = "bin";
+inline var currentDir = "current";
 inline var versionsDir = "versions";
 inline var releasesDir = "releases";
 
@@ -34,13 +35,19 @@ function selectRelease(r:String):Void {
 }
 
 private function unlinkCurrent():Void {
-	FileSystem.deleteFile('$binDir/haxe');
-	FileSystem.deleteFile('$binDir/haxelib');
-	FileSystem.deleteFile("std");
+	inline function unlink(f:String) {
+		if (FileSystem.exists('$currentDir/$f')) {
+			FileSystem.deleteFile('$currentDir/$f');
+		}
+	}
+
+	unlink('haxe');
+	unlink('haxelib');
+	unlink('std');
 }
 
 private function link(dir:String):Void {
-	FileSync.symlink(Path.join(["..", dir, "haxe"]), Path.join([binDir, "haxe"]));
-	FileSync.symlink(Path.join(["..", dir, "haxelib"]), Path.join([binDir, "haxelib"]));
-	FileSync.symlink(Path.join([dir, "std"]), "std");
+	FileSync.symlink(Path.join(["..", dir, "haxe"]), Path.join([currentDir, "haxe"]));
+	FileSync.symlink(Path.join(["..", dir, "haxelib"]), Path.join([currentDir, "haxelib"]));
+	FileSync.symlink(Path.join(["..", dir, "std"]), Path.join([currentDir, "std"]));
 }
