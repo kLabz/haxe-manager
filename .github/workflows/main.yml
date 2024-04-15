@@ -38,8 +38,7 @@ jobs:
           # hx 4.2.5
           # hx-download latest
           # hx dev
-          hx-select.bat dev
-          hx-select-test dev
+          hx-select dev
           hx-download latest
 
       # TODO: unix only

@@ -2,6 +2,7 @@ import sys.FileSystem;
 
 class HaxeDownload {
 	public static function main() {
+		trace("hx-download");
 		switch Sys.args() {
 			case ["latest"]: downloadLatest();
 			case ["latest", alias]: downloadLatest(alias);

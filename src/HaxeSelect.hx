@@ -1,5 +1,6 @@
 class HaxeSelect {
 	public static function main() {
+		trace("hx-select");
 		switch Sys.args() {
 			case [v]:
 				if (Utils.hasVersion(v)) Utils.selectVersion(v, true);
