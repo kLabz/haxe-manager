@@ -1,7 +1,8 @@
-ECHO "Test bat file"
+@ECHO OFF
 
-%ROOT% = %0\..
-%VERSION% = "windows64_569e52e"
-%HAXE_STD_PATH% = "%ROOT%\build\%VERSION%\std"
+SET ROOT=%~dp0
+SET ROOT=%ROOT%..
+SET VERSION=windows64_569e52e
+SET HAXE_STD_PATH=%ROOT%\build\%VERSION%\std
 
-CALL %ROOT%\build\%VERSION\haxe.exe --cwd %ROOT% run-select.hxml %*
+CALL %ROOT%\build\%VERSION%\haxe.exe --cwd %ROOT% run-select.hxml %*

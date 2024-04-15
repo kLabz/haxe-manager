@@ -10,6 +10,7 @@ if ! [ -x "$(command -v fzf)" ]; then
 	cd "$ROOT/bin"
 
 	if [[ "$OSTYPE" == "msys" ]]; then
+		# TODO: install fzf on windows if needed
 		echo "No fzf support for windows (yet)"
 	else
 		BUILD_OS="linux"
@@ -24,7 +25,7 @@ if ! [ -x "$(command -v fzf)" ]; then
 	fi
 fi
 
-# TODO: properly parse args
+# TODO: properly parse args (--skip-defaults)
 if [ -z "$1" ]; then
 	# Download some versions
 	PATH=$PATH:$ROOT/bin hx-download "4.3.4"

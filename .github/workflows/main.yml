@@ -7,8 +7,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-latest
-          - ubuntu-latest
+          # - macos-latest
+          # - ubuntu-latest
           - windows-latest
     runs-on: ${{ matrix.os }}
     env:
@@ -16,19 +16,21 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - name: Add to PATH
+        run: |
+          # TODO: unix vs windows..
+          echo "${env:GITHUB_WORKSPACE}/bin" | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
+
       - name: Install haxe-manager
         run: |
           sh ./install.sh --skip-defaults
 
-      - name: Add to PATH
-        run: |
-          echo "${GITHUB_WORKSPACE}/bin" >> $GITHUB_PATH
-
       - name: Check env
         run: |
-          echo $PATH
-          echo $GITHUB_PATH
-          echo $HAXE_STD_PATH
+          # TODO: unix vs windows..
+          echo "PATH=${env:PATH}"
+          echo "GITHUB_PATH=${env:GITHUB_PATH}"
+          echo "HAXE_STD_PATH=${env:HAXE_STD_PATH}"
 
       - name: Check base usage
         run: |
@@ -38,10 +40,12 @@ jobs:
           # hx dev
           hx-select.bat dev
 
-      - name: Install extra tools
-        run: |
-          sh ./extra/install-all.sh
-          ls -Al bin/
+      # TODO: unix only
+      # - name: Install extra tools
+      #   run: |
+      #     sh ./extra/install-all.sh
+      #     ls -Al bin/
 
-      - name: Check list-haxe-versions
-        run: list-haxe-versions
+      # TODO: unix only
+      # - name: Check list-haxe-versions
+      #   run: list-haxe-versions
