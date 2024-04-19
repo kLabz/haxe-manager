@@ -1,0 +1,3 @@
+[submodule "libs/format"]
+	path = libs/format
+	url = git@github.com:HaxeFoundation/format.git
