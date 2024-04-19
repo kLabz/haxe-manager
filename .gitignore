@@ -4,6 +4,7 @@ releases/
 versions/
 builds/
 current/
+data/
 bin/*
 !bin/hx*
 !bin/haxe

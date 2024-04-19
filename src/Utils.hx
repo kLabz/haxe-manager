@@ -62,9 +62,7 @@ function selectRelease(r:String):Void {
 
 private function unlinkCurrent():Void {
 	inline function unlink(f:String) {
-		if (FileSystem.exists('$currentDir/$f')) {
-			FileSystem.deleteFile('$currentDir/$f');
-		}
+		try FileSystem.deleteFile('$currentDir/$f') catch(_) {}
 	}
 
 	unlink('haxe');

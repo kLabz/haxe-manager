@@ -1,6 +1,7 @@
 import eval.luv.File.FileMode;
 import eval.luv.File.FileSync;
 import haxe.io.Bytes;
+import haxe.io.Input;
 import haxe.io.Path;
 import sys.FileSystem;
 import sys.Http;
@@ -9,14 +10,20 @@ import sys.io.File;
 class HaxeDownload {
 	public static function main() {
 		switch Sys.args() {
+			// Nightlies support
 			case ["latest"]: downloadLatest();
 			case ["latest", alias]: downloadLatest(alias);
 			case ["aws", v] | ["nightly", v]: downloadNightly(v);
 			case ["aws", v, alias] | ["nightly", v, alias]: downloadNightly(v, alias);
+
+			// TODO: reimplement local archive installation
 			case [f] if (FileSystem.exists(f)): throw "TODO";
 			case [f, alias] if (FileSystem.exists(f)): throw "TODO";
+
+			// TODO: only sane looking semver should be considered here
 			case [v]: downloadRelease(v);
 			case [v, alias]: downloadRelease(v, alias);
+
 			case _: displayUsage();
 		}
 	}
@@ -27,6 +34,7 @@ class HaxeDownload {
 	}
 
 	static function downloadNightly(v:String, ?alias:String):Void {
+		v = HaxeNightlies.resolve(v);
 		if (alias == null) alias = v;
 		final url = Utils.getBuildUrl(v);
 		install(url[0], url[1], alias);
@@ -105,7 +113,7 @@ class DownloadHelper {
 		trace('Extracting $filename...');
 
 		return switch (Path.extension(filename)) {
-			case "zip": throw 'TODO: zip extractor'; // TODO
+			case "zip": new ZipExtractor(File.read(path, true)).extract(pathData.dir);
 			case "gz": new TgzExtractor(File.read(path, true)).extract(pathData.dir);
 			case _: throw 'Unexpected release $filename';
 		}
@@ -114,14 +122,18 @@ class DownloadHelper {
 
 class TgzExtractor extends format.tgz.Reader {
 	public function extract(dest:String):Null<String> {
-		final tmp = new haxe.io.BytesOutput();
-		final gz = new format.gz.Reader(i);
+		try {
+			final tmp = new haxe.io.BytesOutput();
+			final gz = new format.gz.Reader(i);
+			gz.readHeader();
+			gz.readData(tmp);
 
-		gz.readHeader();
-		gz.readData(tmp);
-
-		final extractor = new TarExtractor(new haxe.io.BytesInput(tmp.getBytes()));
-		return extractor.extract(dest);
+			final extractor = new TarExtractor(new haxe.io.BytesInput(tmp.getBytes()));
+			return extractor.extract(dest);
+		} catch(e) {
+			i.close();
+			throw e;
+		}
 	}
 }
 
@@ -158,6 +170,52 @@ class TarExtractor extends format.tar.Reader {
 			FileSync.chown(path, e.uid, e.gid);
 			FileSync.chmod(path, [FileMode.NUMERIC(e.fmod)]);
 			readPad(size);
+		}
+
+		return ret;
+	}
+}
+
+class ZipExtractor {
+	var i:Input;
+
+	public function new(i:Input) {
+		this.i = i;
+	}
+
+	public function extract(dest:String):Null<String> {
+		var ret = null;
+		final zip = try {
+			final zip = haxe.zip.Reader.readZip(i);
+			i.close();
+			zip;
+		} catch(e) {
+			i.close();
+			throw e;
+		};
+
+		for (e in zip) {
+			final path = Path.join([dest, e.fileName]);
+			trace(e.fileName, path);
+
+			if (StringTools.endsWith(e.fileName, '/')) {
+				if (ret == null) {
+					ret = e.fileName;
+					trace(ret);
+
+					if (FileSystem.exists(path)) {
+						// TODO: allow overwriting
+						trace('Output already exists; skipping');
+						return ret;
+					}
+				}
+
+				FileSystem.createDirectory(path);
+			} else {
+				final out = File.write(path, true);
+				out.writeBytes(e.data, 0, e.fileSize);
+				out.close();
+			}
 		}
 
 		return ret;
