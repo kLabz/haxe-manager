@@ -5,9 +5,4 @@ versions/
 builds/
 current/
 data/
-bin/*
-!bin/hx
-!bin/haxe
-!bin/haxelib
-!bin/hx-download*
-!bin/hx-select*
+bin/
