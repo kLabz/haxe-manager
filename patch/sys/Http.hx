@@ -447,6 +447,9 @@ class Http extends haxe.http.HttpBase {
 					var len = sock.input.readBytes(buf, 0, if (size > bufsize) bufsize else size);
 					api.writeBytes(buf, 0, len);
 					size -= len;
+
+					// TODO: this shouldn't be needed on "user" code
+					#if eval eval.vm.Gc.minor(); #end
 				}
 			} catch (e:haxe.io.Eof) {
 				throw "Transfer aborted";
