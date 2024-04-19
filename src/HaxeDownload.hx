@@ -5,7 +5,6 @@ import sys.io.File;
 
 class HaxeDownload {
 	public static function main() {
-		trace("hx-download");
 		switch Sys.args() {
 			case ["latest"]: downloadLatest();
 			case ["latest", alias]: downloadLatest(alias);
@@ -37,81 +36,12 @@ class HaxeDownload {
 	}
 
 	static function install(url:String, filename:String, alias:String):Void {
-		trace('TODO: download file $filename as $alias from $url$filename');
+		// trace('TODO: download file $filename as $alias from $url$filename');
 
-		var req = new Http('$url$filename');
-		req.setHeader("User-Agent", ""); // or any user-agent
-		req.onBytes = function(bytes) {
-			// trace("On bytes");
-			// for (k=>v in req.responseHeaders) trace(k,v);
-
-			if (req.responseHeaders.exists("Location")) {
-				final newUrl = req.responseHeaders.get("Location");
-				// trace(url + filename);
-				trace(newUrl);
-
-				var req2 = new Http(newUrl);
-				req2.setHeader("User-Agent", ""); // or any user-agent
-				// req2.setHeader("X-GitHub-Request-Id", req.responseHeaders.get("X-GitHub-Request-Id"));
-				req2.onBytes = function(bytes) {
-					// trace("On bytes");
-					trace(req2.responseHeaders);
-					final out = Path.join([Utils.releasesDir, filename]);
-					trace('Save to $out');
-					File.saveBytes(out, bytes);
-				};
-
-				req2.onError = function(msg) {
-					trace("Error");
-					trace(req2.responseHeaders);
-					trace(msg);
-					throw msg;
-				};
-
-				trace('Go (redirection)');
-				req2.request();
-
-				// var client = new http.HttpClient();
-				// client.get(newUrl, null, [
-				// 	"X-GitHub-Request-Id" => req.responseHeaders.get("X-GitHub-Request-Id")
-				// ]).then(res -> {
-				// 	trace("On bytes");
-				// 	final out = Path.join([Utils.releasesDir, filename]);
-				// 	trace('Save to $out');
-				// 	File.saveBytes(out, res.response.body);
-				// }, error -> {
-				// 	trace("error");
-				// 	trace(error.message);
-				// 	throw error;
-				// });
-			} else {
-				final out = Path.join([Utils.releasesDir, filename]);
-				trace('Save to $out');
-				File.saveBytes(out, bytes);
-			}
-		};
-
-		req.onError = function(msg) {
-			trace("Error");
-			trace(req.responseHeaders);
-			trace(msg);
-			throw msg;
-		};
-
-		trace('Go');
-		req.request();
-
-		// var client = new http.HttpClient();
-		// client.get('$url$filename').then(res -> {
-		// 	trace("On bytes");
-		// 	final out = Path.join([Utils.releasesDir, filename]);
-		// 	trace('Save to $out');
-		// 	File.saveBytes(out, res.response.body);
-		// }, error -> {
-		// 	trace("error");
-		// 	trace(error);
-		// 	throw error;
-		// });
+		final path = Path.join([Utils.releasesDir, filename]);
+		DownloadHelper.download(url + filename, path, () -> {
+			trace('Downloaded $filename as $alias; TODO: symlinks');
+		});
 	}
 
 	static function displayUsage() {
@@ -131,5 +61,32 @@ class HaxeDownload {
 			"       Download specific nightly VERSION (e.g., 2023-01-22_development_dd5e467)",
 			"       Save as AS_NAME if provided or use version number (with revision)"
 		].join("\n"));
+	}
+}
+
+class DownloadHelper {
+	public static function download(url:String, out:String, cb:()->Void):Void {
+		var output = File.write(out, true);
+		var req = new Http(url);
+
+		req.onError = function(msg) {
+			trace("Error: " + msg);
+			// trace(req.responseHeaders);
+			output.close();
+			throw msg;
+		};
+
+		// Use custom request to write directly to file
+		req.customRequest(false, output);
+
+		// Follow redirections
+		if (req.responseHeaders.exists("Location")) {
+			final newUrl = req.responseHeaders.get("Location");
+			output.close();
+			download(newUrl, out, cb);
+		} else {
+			output.close();
+			cb();
+		}
 	}
 }
