@@ -42,7 +42,8 @@ function getVersions():Array<String> {
 // TODO: windows vs symlinks
 function hasVersion(v:String):Bool {
 	final dir = Path.join([versionsDir, v]);
-	return FileSystem.isDirectory(dir);
+	return FileSystem.exists(dir);
+	// return FileSystem.isDirectory(dir);
 }
 
 function selectVersion(v:String, ?skipCheck:Bool = false):Void {
@@ -55,7 +56,8 @@ function selectVersion(v:String, ?skipCheck:Bool = false):Void {
 
 function selectRelease(r:String):Void {
 	final dir = Path.join([releasesDir, r]);
-	if (!FileSystem.isDirectory(dir)) throw 'Version $r is not installed';
+	if (!FileSystem.exists(dir)) throw 'Version $r is not installed';
+	// if (!FileSystem.isDirectory(dir)) throw 'Version $r is not installed';
 
 	unlinkCurrent();
 	link(dir);
