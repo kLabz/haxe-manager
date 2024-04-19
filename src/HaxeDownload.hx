@@ -1,3 +1,6 @@
+import eval.luv.File.FileMode;
+import eval.luv.File.FileSync;
+import haxe.io.Bytes;
 import haxe.io.Path;
 import sys.FileSystem;
 import sys.Http;
@@ -40,7 +43,8 @@ class HaxeDownload {
 
 		final path = Path.join([Utils.releasesDir, filename]);
 		DownloadHelper.download(url + filename, path, () -> {
-			trace('Downloaded $filename as $alias; TODO: symlinks');
+			trace('Downloaded $filename as $alias');
+			DownloadHelper.extract(path);
 		});
 	}
 
@@ -87,6 +91,57 @@ class DownloadHelper {
 		} else {
 			output.close();
 			cb();
+		}
+	}
+
+	public static function extract(path:String):Void {
+		final pathData = new Path(path);
+		final filename = pathData.file + (pathData.ext == null ? "" : "." + pathData.ext);
+		trace('Extracting $filename...');
+
+		switch (Path.extension(filename)) {
+			case "zip": throw 'TODO: zip extractor'; // TODO
+			case "gz": new TgzExtractor(File.read(path, true)).extract(pathData.dir);
+			case _: throw 'Unexpected release $filename';
+		}
+
+		trace('TODO: symlinks');
+	}
+}
+
+class TgzExtractor extends format.tgz.Reader {
+	public function extract(dest:String):Void {
+		var tmp = new haxe.io.BytesOutput();
+		var gz = new format.gz.Reader(i);
+		gz.readHeader();
+		gz.readData(tmp);
+		new TarExtractor(new haxe.io.BytesInput(tmp.getBytes())).extract(dest);
+	}
+}
+
+class TarExtractor extends format.tar.Reader {
+	public function extract(dest:String):Void {
+		var buf = Bytes.alloc(1 << 16); // 64 KB
+		while (true) {
+			var e = readEntryHeader();
+			if (e == null) break;
+
+			// trace('  Writing ${e.fileName} ...');
+
+			final size = e.fileSize;
+			final path = Path.join([dest, e.fileName]);
+			if (StringTools.endsWith(e.fileName, '/')) {
+				FileSystem.createDirectory(path);
+			} else {
+				var out = File.write(path, true);
+				e.data = i.read(size);
+				out.writeBytes(e.data, 0, size);
+				out.close();
+			}
+
+			FileSync.chown(path, e.uid, e.gid);
+			FileSync.chmod(path, [FileMode.NUMERIC(e.fmod)]);
+			readPad(size);
 		}
 	}
 }
