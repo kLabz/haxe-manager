@@ -39,12 +39,17 @@ class HaxeDownload {
 	}
 
 	static function install(url:String, filename:String, alias:String):Void {
-		// trace('TODO: download file $filename as $alias from $url$filename');
-
 		final path = Path.join([Utils.releasesDir, filename]);
+
 		DownloadHelper.download(url + filename, path, () -> {
 			trace('Downloaded $filename as $alias');
-			DownloadHelper.extract(path);
+			final out = DownloadHelper.extract(path);
+			FileSystem.deleteFile(path);
+
+			final versionPath = Path.join([Utils.versionsDir, alias]);
+			try FileSystem.deleteFile(versionPath) catch(_) {}
+			FileSync.symlink(Path.join([FileSystem.absolutePath(Utils.releasesDir), out]), versionPath);
+			trace('Done');
 		});
 	}
 
@@ -70,8 +75,8 @@ class HaxeDownload {
 
 class DownloadHelper {
 	public static function download(url:String, out:String, cb:()->Void):Void {
-		var output = File.write(out, true);
-		var req = new Http(url);
+		final output = File.write(out, true);
+		final req = new Http(url);
 
 		req.onError = function(msg) {
 			trace("Error: " + msg);
@@ -94,46 +99,57 @@ class DownloadHelper {
 		}
 	}
 
-	public static function extract(path:String):Void {
+	public static function extract(path:String):Null<String> {
 		final pathData = new Path(path);
 		final filename = pathData.file + (pathData.ext == null ? "" : "." + pathData.ext);
 		trace('Extracting $filename...');
 
-		switch (Path.extension(filename)) {
+		return switch (Path.extension(filename)) {
 			case "zip": throw 'TODO: zip extractor'; // TODO
 			case "gz": new TgzExtractor(File.read(path, true)).extract(pathData.dir);
 			case _: throw 'Unexpected release $filename';
 		}
-
-		trace('TODO: symlinks');
 	}
 }
 
 class TgzExtractor extends format.tgz.Reader {
-	public function extract(dest:String):Void {
-		var tmp = new haxe.io.BytesOutput();
-		var gz = new format.gz.Reader(i);
+	public function extract(dest:String):Null<String> {
+		final tmp = new haxe.io.BytesOutput();
+		final gz = new format.gz.Reader(i);
+
 		gz.readHeader();
 		gz.readData(tmp);
-		new TarExtractor(new haxe.io.BytesInput(tmp.getBytes())).extract(dest);
+
+		final extractor = new TarExtractor(new haxe.io.BytesInput(tmp.getBytes()));
+		return extractor.extract(dest);
 	}
 }
 
 class TarExtractor extends format.tar.Reader {
-	public function extract(dest:String):Void {
-		var buf = Bytes.alloc(1 << 16); // 64 KB
-		while (true) {
-			var e = readEntryHeader();
-			if (e == null) break;
+	public function extract(dest:String):Null<String> {
+		var ret = null;
+		final buf = Bytes.alloc(1 << 16); // 64 KB
 
-			// trace('  Writing ${e.fileName} ...');
+		while (true) {
+			final e = readEntryHeader();
+			if (e == null) break;
 
 			final size = e.fileSize;
 			final path = Path.join([dest, e.fileName]);
 			if (StringTools.endsWith(e.fileName, '/')) {
+				if (ret == null) {
+					ret = e.fileName;
+
+					if (FileSystem.exists(path)) {
+						// TODO: allow overwriting
+						trace('Output already exists; skipping');
+						return ret;
+					}
+				}
+
 				FileSystem.createDirectory(path);
 			} else {
-				var out = File.write(path, true);
+				final out = File.write(path, true);
 				e.data = i.read(size);
 				out.writeBytes(e.data, 0, size);
 				out.close();
@@ -143,5 +159,7 @@ class TarExtractor extends format.tar.Reader {
 			FileSync.chmod(path, [FileMode.NUMERIC(e.fmod)]);
 			readPad(size);
 		}
+
+		return ret;
 	}
 }
