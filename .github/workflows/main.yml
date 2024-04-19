@@ -74,8 +74,15 @@ jobs:
       - name: Check base usage
         run: |
           hx-download latest
+          dir releases
+          dir versions
           hx-download 4.3.4
+          dir releases
+          dir versions
           hx-download nightly 569e52e
+          dir releases
+          dir versions
           hx-select dev
-          haxe --version
+          dir current
+          haxe.exe --version
 

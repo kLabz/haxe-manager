@@ -28,7 +28,7 @@ function getReleaseUrl(v:String):Array<String> {
 		case "Mac":
 			['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-osx.tar.gz'];
 		case "Windows":
-			['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-windows64.zip'];
+			['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-win64.zip'];
 		case os: throw 'OS $os is not supported (yet)';
 	}
 }
@@ -39,6 +39,7 @@ function getVersions():Array<String> {
 	return FileSystem.readDirectory(versionsDir);
 }
 
+// TODO: windows vs symlinks
 function hasVersion(v:String):Bool {
 	final dir = Path.join([versionsDir, v]);
 	return FileSystem.isDirectory(dir);
@@ -60,6 +61,7 @@ function selectRelease(r:String):Void {
 	link(dir);
 }
 
+// TODO: unix vs windows
 private function unlinkCurrent():Void {
 	inline function unlink(f:String) {
 		try FileSystem.deleteFile('$currentDir/$f') catch(_) {}
@@ -70,6 +72,7 @@ private function unlinkCurrent():Void {
 	unlink('std');
 }
 
+// TODO: unix vs windows
 private function link(dir:String):Void {
 	if (!FileSystem.exists(currentDir)) FileSystem.createDirectory(currentDir);
 	FileSync.symlink(Path.join(["..", dir, "haxe"]), Path.join([currentDir, "haxe"]));

@@ -50,14 +50,14 @@ class HaxeDownload {
 		final path = Path.join([Utils.releasesDir, filename]);
 
 		DownloadHelper.download(url + filename, path, () -> {
-			trace('Downloaded $filename as $alias');
+			Sys.println('Downloaded $filename');
 			final out = DownloadHelper.extract(path);
 			FileSystem.deleteFile(path);
 
 			final versionPath = Path.join([Utils.versionsDir, alias]);
 			try FileSystem.deleteFile(versionPath) catch(_) {}
 			FileSync.symlink(Path.join([FileSystem.absolutePath(Utils.releasesDir), out]), versionPath);
-			trace('Done');
+			Sys.println('Installed $filename as $alias');
 		});
 	}
 
@@ -110,7 +110,7 @@ class DownloadHelper {
 	public static function extract(path:String):Null<String> {
 		final pathData = new Path(path);
 		final filename = pathData.file + (pathData.ext == null ? "" : "." + pathData.ext);
-		trace('Extracting $filename...');
+		Sys.println('Extracting $filename...');
 
 		return switch (Path.extension(filename)) {
 			case "zip": new ZipExtractor(File.read(path, true)).extract(pathData.dir);
@@ -154,7 +154,7 @@ class TarExtractor extends format.tar.Reader {
 
 					if (FileSystem.exists(path)) {
 						// TODO: allow overwriting
-						trace('Output already exists; skipping');
+						Sys.println('Output already exists; skipping');
 						return ret;
 					}
 				}
@@ -196,16 +196,14 @@ class ZipExtractor {
 
 		for (e in zip) {
 			final path = Path.join([dest, e.fileName]);
-			trace(e.fileName, path);
 
 			if (StringTools.endsWith(e.fileName, '/')) {
 				if (ret == null) {
 					ret = e.fileName;
-					trace(ret);
 
 					if (FileSystem.exists(path)) {
 						// TODO: allow overwriting
-						trace('Output already exists; skipping');
+						Sys.println('Output already exists; skipping');
 						return ret;
 					}
 				}
@@ -213,7 +211,7 @@ class ZipExtractor {
 				FileSystem.createDirectory(path);
 			} else {
 				final out = File.write(path, true);
-				out.writeBytes(e.data, 0, e.fileSize);
+				out.writeBytes(haxe.zip.Reader.unzip(e), 0, e.fileSize);
 				out.close();
 			}
 		}
