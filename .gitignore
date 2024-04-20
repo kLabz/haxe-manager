@@ -1,7 +1,7 @@
 releases/
 versions/
 builds/
-current/
+current
 data/
 bin/
 build/*.hxb

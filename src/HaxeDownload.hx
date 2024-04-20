@@ -1,4 +1,5 @@
 import haxe.io.BytesInput;
+import haxe.zip.InflateImpl;
 import eval.luv.File.FileMode;
 import eval.luv.File.FileSync;
 import haxe.io.Bytes;
@@ -140,10 +141,10 @@ class TgzExtractor extends format.tgz.Reader {
 }
 
 class TgzBytesInput extends BytesInput {
-	var inflate:format.tools.InflateImpl;
+	var inflate:InflateImpl;
 
 	public function new(i:Input) {
-		this.inflate = new format.tools.InflateImpl(i, false, false);
+		this.inflate = new InflateImpl(i, false, false);
 		super(Bytes.alloc(0));
 	}
 

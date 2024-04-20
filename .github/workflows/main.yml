@@ -2,7 +2,7 @@ name: CI
 on: push
 
 jobs:
-  build-unix:
+  test-unix:
     strategy:
       fail-fast: false
       matrix:
@@ -14,8 +14,6 @@ jobs:
       HAXE_STD_PATH: "${{ github.workspace }}/current/std"
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
 
       - name: Add to PATH
         run: |
@@ -52,7 +50,7 @@ jobs:
       - name: Check list-haxe-versions
         run: list-haxe-versions
 
-  build-windows:
+  test-windows:
     strategy:
       fail-fast: false
       matrix:
@@ -63,8 +61,6 @@ jobs:
       HAXE_STD_PATH: "${{ github.workspace }}/current/std"
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: recursive
 
       - name: Add to PATH
         run: |

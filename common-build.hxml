@@ -1,2 +1,3 @@
 common.hxml
 -cp src
+-cp patch
