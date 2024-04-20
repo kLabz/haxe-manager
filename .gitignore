@@ -1,8 +1,7 @@
-**/node_modules/*
-**/package-lock.json
 releases/
 versions/
 builds/
 current/
 data/
 bin/
+build/*.hxb

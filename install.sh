@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ROOT=$(dirname $(readlink -f $0))
+HAXE_VER="569e52e"
 
 mkdir -p "$ROOT/releases"
 mkdir -p "$ROOT/versions"
@@ -27,13 +28,13 @@ if ! [ -x "$(command -v fzf)" ]; then
 fi
 
 # Setup included Haxe version
-if ! [ -e "versions/5.0.0-alpha.1+569e52e" ]; then
+if ! [ -e "versions/5.0.0-alpha.1+$HAXE_VER" ]; then
 	BUILD_OS="linux64"
 	if [[ "$OSTYPE" == "darwin"* ]]; then
 		BUILD_OS="mac"
 	fi
 
-	ln -s "../build/${BUILD_OS}_569e52e" "versions/5.0.0-alpha.1+569e52e"
+	ln -s "../build/${BUILD_OS}_$HAXE_VER" "versions/5.0.0-alpha.1+$HAXE_VER"
 fi
 
 # Expose haxe command
@@ -46,8 +47,12 @@ if ! [ -e "bin/haxelib" ]; then
 	ln -s ../current/haxelib bin/haxelib
 fi
 
+# Prebuild tools
+HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-select.hxml
+HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-download.hxml
+
 if ! [ -e "current/haxe" ]; then
-	hx-select "5.0.0-alpha.1+569e52e"
+	hx-select "5.0.0-alpha.1+$HAXE_VER"
 fi
 
 echo "Please add $ROOT/bin to your PATH"

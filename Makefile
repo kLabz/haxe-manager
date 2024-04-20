@@ -1,4 +1,4 @@
 .SILENT:
 
 build-tools:
-	scripts/build-tools.sh
+	extra/build-tools.sh
