@@ -7,8 +7,11 @@ import tools.DownloadHelper;
 
 class HaxeDownload {
 	public static function main() {
-		// TODO: catch exceptions and display nicer errors
-		switch Sys.args() {
+		Utils.wrap(() -> run(Sys.args()));
+	}
+
+	public static function run(args:Array<String>):Void {
+		switch args {
 			// Nightlies support
 			case ["latest"]: downloadLatest();
 			case ["latest", alias]: downloadLatest(alias);

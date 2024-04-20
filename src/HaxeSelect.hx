@@ -1,6 +1,10 @@
 class HaxeSelect {
 	public static function main() {
-		switch Sys.args() {
+		Utils.wrap(() -> run(Sys.args()));
+	}
+
+	public static function run(args:Array<String>):Void {
+		switch args {
 			case [v]:
 				if (Utils.hasVersion(v)) Utils.selectVersion(v, true);
 				else Utils.selectRelease(v);

@@ -7,6 +7,15 @@ inline var currentDir = "current";
 inline var versionsDir = "versions";
 inline var releasesDir = "releases";
 
+function wrap(f:()->Void):Void {
+	try f() catch (e:String) failWith(e);
+}
+
+function failWith(msg:String):Void {
+	Sys.stderr().writeString('Error: $msg\n');
+	Sys.exit(1);
+}
+
 function getBuildUrl(v:String):Array<String> {
 	// TODO: other OS, and arch variants
 	return switch Sys.systemName() {
@@ -36,7 +45,15 @@ function getReleaseUrl(v:String):Array<String> {
 function getVersions():Array<String> {
 	if (!FileSystem.exists(versionsDir)) FileSystem.createDirectory(versionsDir);
 	if (!FileSystem.isDirectory(versionsDir)) throw '${FileSystem.absolutePath(versionsDir)} should be a directory';
-	return FileSystem.readDirectory(versionsDir);
+
+	final ret = FileSystem.readDirectory(versionsDir);
+	ret.sort((a,b) -> a > b ? -1 : 1);
+	return ret;
+}
+
+function getCurrent():Null<String> {
+	// TODO
+	return "5.0.0-alpha.1+db842bf";
 }
 
 function hasVersion(v:String):Bool {

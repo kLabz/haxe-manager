@@ -13,6 +13,7 @@ cp extra/hx-download bin/
 cp extra/hx-select bin/
 
 # Install fzf if needed
+# TODO remove this
 if ! [ -x "$(command -v fzf)" ]; then
 	cd "$ROOT/bin"
 
@@ -36,6 +37,9 @@ if ! [ -e "versions/5.0.0-alpha.1+$HAXE_VER" ]; then
 
 	ln -s "$ROOT/build/${BUILD_OS}_$HAXE_VER" "versions/5.0.0-alpha.1+$HAXE_VER"
 fi
+if ! [ -e "current" ]; then
+	ln -s "$ROOT/build/${BUILD_OS}_${HAXE_VER}" "current"
+fi
 
 # Expose haxe command
 if ! [ -e "bin/haxe" ]; then
@@ -47,13 +51,14 @@ if ! [ -e "bin/haxelib" ]; then
 	ln -s ../current/haxelib bin/haxelib
 fi
 
+# Install libs
+"$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxelib" newrepo
+"$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxelib" install -y fuzzaldrin
+"$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxelib" install -y ansi
+
 # Prebuild tools
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-select.hxml
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-download.hxml
-
-if ! [ -e "current" ]; then
-	hx-select "5.0.0-alpha.1+$HAXE_VER"
-fi
 
 echo "Please add $ROOT/bin to your PATH"
 echo "Please set HAXE_STD_PATH to $ROOT/current/std"

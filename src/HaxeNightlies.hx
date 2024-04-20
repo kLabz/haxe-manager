@@ -19,10 +19,10 @@ class HaxeNightlies {
 				updateNightliesData();
 				return getNightly(ref);
 			} else {
-				throw 'Error: cannot find Haxe revision $ref';
+				throw 'Cannot find Haxe revision $ref';
 			}
 		} else {
-			if (!checkBranch(ref)) throw 'Error: only revisions from branch development are supported atm';
+			if (!checkBranch(ref)) throw 'Only revisions from branch development are supported atm';
 			return '${date}_development_${getShortSha(ref)}';
 		}
 	}
@@ -48,16 +48,16 @@ class HaxeNightlies {
 	static function ensureSetup():Bool {
 		if (FileSystem.exists(ROOT)) return false;
 
-		trace("Initialize nightlies data...");
+		Sys.println("Initialize nightlies data...");
 		git(["clone", "--bare", HAXE_REPO, ROOT]);
-		trace("Nightlies data ready.");
+		Sys.println("Nightlies data ready.");
 
 		return true;
 	}
 
 	static function updateNightliesData() {
 		if (!ensureSetup()) {
-			trace("Updating nightlies data...");
+			Sys.println("Updating nightlies data...");
 			git(["fetch", HAXE_REPO], ROOT);
 		}
 		updated = true;

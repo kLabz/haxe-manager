@@ -1,2 +1,4 @@
+-lib fuzzaldrin
+-lib ansi
 -dce no
 -D message.reporting=pretty

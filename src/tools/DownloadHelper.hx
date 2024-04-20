@@ -10,10 +10,8 @@ class DownloadHelper {
 		final req = new Http(url);
 
 		req.onError = function(msg) {
-			trace("Error: " + msg);
-			// trace(req.responseHeaders);
 			output.close();
-			throw msg;
+			throw '$msg while dowloading $url';
 		};
 
 		// Use custom request to write directly to file
