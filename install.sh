@@ -34,7 +34,7 @@ if ! [ -e "versions/5.0.0-alpha.1+$HAXE_VER" ]; then
 		BUILD_OS="mac"
 	fi
 
-	ln -s "../build/${BUILD_OS}_$HAXE_VER" "versions/5.0.0-alpha.1+$HAXE_VER"
+	ln -s "$ROOT/build/${BUILD_OS}_$HAXE_VER" "versions/5.0.0-alpha.1+$HAXE_VER"
 fi
 
 # Expose haxe command
@@ -51,7 +51,7 @@ fi
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-select.hxml
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-download.hxml
 
-if ! [ -e "current/haxe" ]; then
+if ! [ -e "current" ]; then
 	hx-select "5.0.0-alpha.1+$HAXE_VER"
 fi
 

@@ -24,6 +24,7 @@ jobs:
       - name: Install haxe-manager
         run: |
           ./install.sh
+          haxe --version
 
       - name: Check env
         run: |
@@ -35,6 +36,7 @@ jobs:
         run: |
           hx-download latest
           hx-download 4.3.4
+          hx-download nightly 569e52e
           hx-download nightly 569e52e
           haxe --version
           hx-select dev
@@ -71,7 +73,7 @@ jobs:
       - name: Install haxe-manager
         run: |
           ./install.bat
-          haxe -version
+          haxe --version
 
       - name: Check env
         run: |
@@ -81,15 +83,13 @@ jobs:
 
       - name: Check base usage
         run: |
-          dir
           hx-download latest
           hx-download 4.3.4
           hx-download nightly 569e52e
+          hx-download nightly 569e52e
           haxe --version
           hx-select dev
-          dir
           haxe --version
           hx-select 4.3.4
-          dir
           haxe --version
 
