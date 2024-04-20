@@ -1,3 +1,4 @@
+import haxe.io.BytesInput;
 import eval.luv.File.FileMode;
 import eval.luv.File.FileSync;
 import haxe.io.Bytes;
@@ -9,6 +10,7 @@ import sys.io.File;
 
 class HaxeDownload {
 	public static function main() {
+		// TODO: catch exceptions and display nicer errors
 		switch Sys.args() {
 			// Nightlies support
 			case ["latest"]: downloadLatest();
@@ -33,6 +35,7 @@ class HaxeDownload {
 		install(url[0], url[1], alias);
 	}
 
+	// TODO: Install as "5.0.0-alpha.1+569e52e" if no alias (using -version)
 	static function downloadNightly(v:String, ?alias:String):Void {
 		v = HaxeNightlies.resolve(v);
 		if (alias == null) alias = v;
@@ -110,8 +113,8 @@ class DownloadHelper {
 	public static function extract(path:String):Null<String> {
 		final pathData = new Path(path);
 		final filename = pathData.file + (pathData.ext == null ? "" : "." + pathData.ext);
-		Sys.println('Extracting $filename...');
 
+		Sys.println('Extracting $filename...');
 		return switch (Path.extension(filename)) {
 			case "zip": new ZipExtractor(File.read(path, true)).extract(pathData.dir);
 			case "gz": new TgzExtractor(File.read(path, true)).extract(pathData.dir);
@@ -126,14 +129,32 @@ class TgzExtractor extends format.tgz.Reader {
 			final tmp = new haxe.io.BytesOutput();
 			final gz = new format.gz.Reader(i);
 			gz.readHeader();
-			gz.readData(tmp);
 
-			final extractor = new TarExtractor(new haxe.io.BytesInput(tmp.getBytes()));
+			final extractor = new TarExtractor(new TgzBytesInput(i));
 			return extractor.extract(dest);
 		} catch(e) {
 			i.close();
 			throw e;
 		}
+	}
+}
+
+class TgzBytesInput extends BytesInput {
+	var inflate:format.tools.InflateImpl;
+
+	public function new(i:Input) {
+		this.inflate = new format.tools.InflateImpl(i, false, false);
+		super(Bytes.alloc(0));
+	}
+
+	override function readByte():Int {
+		var buf = Bytes.alloc(1);
+		var len = inflate.readBytes(buf, 0, 1);
+		return buf.get(0);
+	}
+
+	override function readBytes(buf:Bytes, pos:Int, len:Int):Int {
+		return inflate.readBytes(buf, 0, len);
 	}
 }
 
