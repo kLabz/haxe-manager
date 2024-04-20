@@ -39,11 +39,9 @@ function getVersions():Array<String> {
 	return FileSystem.readDirectory(versionsDir);
 }
 
-// TODO: windows vs symlinks
 function hasVersion(v:String):Bool {
 	final dir = Path.join([versionsDir, v]);
 	return FileSystem.exists(dir);
-	// return FileSystem.isDirectory(dir);
 }
 
 function selectVersion(v:String, ?skipCheck:Bool = false):Void {
@@ -57,27 +55,18 @@ function selectVersion(v:String, ?skipCheck:Bool = false):Void {
 function selectRelease(r:String):Void {
 	final dir = Path.join([releasesDir, r]);
 	if (!FileSystem.exists(dir)) throw 'Version $r is not installed';
-	// if (!FileSystem.isDirectory(dir)) throw 'Version $r is not installed';
 
 	unlinkCurrent();
 	link(dir);
 }
 
-// TODO: unix vs windows
 private function unlinkCurrent():Void {
-	inline function unlink(f:String) {
-		try FileSystem.deleteFile('$currentDir/$f') catch(_) {}
-	}
-
-	unlink('haxe');
-	unlink('haxelib');
-	unlink('std');
+	if (FileSystem.exists(currentDir)) FileSync.unlink(currentDir);
 }
 
-// TODO: unix vs windows
 private function link(dir:String):Void {
-	if (!FileSystem.exists(currentDir)) FileSystem.createDirectory(currentDir);
-	FileSync.symlink(Path.join(["..", dir, "haxe"]), Path.join([currentDir, "haxe"]));
-	FileSync.symlink(Path.join(["..", dir, "haxelib"]), Path.join([currentDir, "haxelib"]));
-	FileSync.symlink(Path.join(["..", dir, "std"]), Path.join([currentDir, "std"]));
+	switch FileSync.readLink(dir) {
+		case Ok(dir): FileSync.symlink(dir, currentDir, [SYMLINK_DIR]);
+		case Error(_): FileSync.symlink(dir, currentDir, [SYMLINK_DIR]);
+	}
 }

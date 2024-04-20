@@ -81,12 +81,15 @@ jobs:
 
       - name: Check base usage
         run: |
+          dir
           hx-download latest
           hx-download 4.3.4
           hx-download nightly 569e52e
           haxe --version
           hx-select dev
+          dir
           haxe --version
           hx-select 4.3.4
+          dir
           haxe --version
 
