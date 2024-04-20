@@ -1,6 +1,7 @@
 import eval.luv.File.FileSync;
 import haxe.io.Path;
 import sys.FileSystem;
+import sys.io.Process;
 
 import tools.DownloadHelper;
 
@@ -31,21 +32,18 @@ class HaxeDownload {
 		install(url[0], url[1], alias);
 	}
 
-	// TODO: Install as "5.0.0-alpha.1+569e52e" if no alias (using -version)
 	static function downloadNightly(v:String, ?alias:String):Void {
 		v = HaxeNightlies.resolve(v);
-		if (alias == null) alias = v;
 		final url = Utils.getBuildUrl(v);
 		install(url[0], url[1], alias);
 	}
 
 	static function downloadRelease(v:String, ?alias:String):Void {
-		if (alias == null) alias = v;
 		final url = Utils.getReleaseUrl(v);
 		install(url[0], url[1], alias);
 	}
 
-	static function install(url:String, filename:String, alias:String):Void {
+	static function install(url:String, filename:String, ?alias:String):Void {
 		final path = Path.join([Utils.releasesDir, filename]);
 
 		DownloadHelper.download(url + filename, path, () -> {
@@ -53,9 +51,29 @@ class HaxeDownload {
 			final out = DownloadHelper.extract(path);
 			FileSystem.deleteFile(path);
 
+			final releasePath = Path.join([FileSystem.absolutePath(Utils.releasesDir), out]);
+
+			if (alias == null) {
+				final exe = switch Sys.systemName() {
+					case "Windows": "haxe.exe";
+					case _: "haxe";
+				};
+
+				final proc = new Process(Path.join([releasePath, exe]), ["--version"]);
+				try {
+					final code = proc.exitCode();
+					if (code > 0) throw proc.stderr.readAll().toString();
+					alias = StringTools.trim(proc.stdout.readAll().toString());
+					proc.close();
+				} catch (e) {
+					proc.close();
+					throw e;
+				}
+			}
+
 			final versionPath = Path.join([Utils.versionsDir, alias]);
 			try FileSystem.deleteFile(versionPath) catch(_) {}
-			FileSync.symlink(Path.join([FileSystem.absolutePath(Utils.releasesDir), out]), versionPath);
+			FileSync.symlink(releasePath, versionPath);
 			Sys.println('Installed $filename as $alias');
 		});
 	}

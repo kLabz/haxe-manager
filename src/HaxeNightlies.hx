@@ -36,6 +36,7 @@ class HaxeNightlies {
 			final code = proc.exitCode();
 			if (code > 0) throw proc.stderr.readAll().toString();
 			final ret = StringTools.trim(proc.stdout.readAll().toString());
+			proc.close();
 			return ret == "" ? null : ret;
 		} catch (e) {
 			proc.close();
