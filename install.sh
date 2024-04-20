@@ -51,11 +51,6 @@ if ! [ -e "bin/haxelib" ]; then
 	ln -s ../current/haxelib bin/haxelib
 fi
 
-# Install libs
-"$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxelib" newrepo
-"$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxelib" install -y fuzzaldrin
-"$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxelib" install -y ansi
-
 # Prebuild tools
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-select.hxml
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-download.hxml
