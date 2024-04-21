@@ -96,6 +96,4 @@ jobs:
           hx select dev
           haxe --version
           hx current
-          hx current --name || echo "Not supported"
-          hx current --full || echo "Not supported"
 
