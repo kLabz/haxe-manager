@@ -27,6 +27,9 @@ class HaxeManager {
 				Sys.println(Utils.getCurrentName().or("") + ' (' + Utils.getCurrent() + ')');
 
 			case ["--help", []]: displayUsage();
+			case ["--help", ["download"]]: HaxeDownload.displayUsage();
+			case ["--help", ["select"]]: HaxeSelect.displayUsage();
+
 			case [v, []]: HaxeSelect.select(v);
 			case _: throw 'Invalid arguments';
 		}

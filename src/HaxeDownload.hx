@@ -26,7 +26,9 @@ class HaxeDownload {
 			case [v]: downloadRelease(v);
 			case [v, alias]: downloadRelease(v, alias);
 
-			case _: displayUsage();
+			case _:
+				Sys.println("hx download: missing argument(s)\n");
+				displayUsage();
 		}
 	}
 
@@ -64,22 +66,21 @@ class HaxeDownload {
 		});
 	}
 
-	static function displayUsage() {
+	public static function displayUsage() {
 		Sys.println([
-			"hx-download: missing argument(s)",
-			"",
-			"Usage: hx-download <VERSION> [AS_NAME]",
+			"Usage: hx download <VERSION> [AS_NAME]",
 			"       Download official release VERSION (e.g., 4.3.0)",
 			"       Save as AS_NAME if provided or use version number",
 			"",
-			"   or: hx-download latest [AS_NAME]",
+			"   or: hx download latest [AS_NAME]",
 			"       Download latest nightly",
 			"       Save as AS_NAME if provided or use version number (with revision)",
 			"",
-			"   or: hx-download nightly <VERSION> [AS_NAME]",
-			"   or: hx-download aws <VERSION> [AS_NAME]",
+			"   or: hx download nightly <VERSION> [AS_NAME]",
+			"   or: hx download aws <VERSION> [AS_NAME]",
 			"       Download specific nightly VERSION (e.g., 2023-01-22_development_dd5e467)",
-			"       Save as AS_NAME if provided or use version number (with revision)"
+			"       Save as AS_NAME if provided or use version number (with revision)",
+			"       Note: short hash VERSION is also supported for development nightlies (e.g. dd5e467)"
 		].join("\n"));
 	}
 }

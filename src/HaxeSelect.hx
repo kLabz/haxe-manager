@@ -35,7 +35,7 @@ class HaxeSelect {
 		Sys.command("haxe", ["-version"]);
 	}
 
-	static function displayUsage() {
+	public static function displayUsage() {
 		// TODO: proper help message
 		Sys.println("Please specify a haxe version");
 	}
