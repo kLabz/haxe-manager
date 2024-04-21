@@ -72,7 +72,7 @@ class Fuzzaldrin {
 		}
 		return matches;
 	}
-	
+
 	static function sortMatches(a:Int, b:Int):Int {
 		if (a > b)
 			return 1;
@@ -81,5 +81,5 @@ class Fuzzaldrin {
 		else
 			return 0;
 	}
-    
+
 }

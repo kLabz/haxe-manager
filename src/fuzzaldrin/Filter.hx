@@ -1,16 +1,21 @@
 package fuzzaldrin;
 
+import haxe.Utf8;
+
 class Filter {
-    
+
 	static function pluckCandidates(a):Dynamic {
 		return a.candidate;
 	}
 
+	@:haxe.warning("-WDeprecated")
 	static function sortCandidates(a:{
 		candidate:Dynamic,
+		string:String,
 		score:Float
 	}, b:{
 		candidate:Dynamic,
+		string:String,
 		score:Float
 	}):Int {
 		if (b.score > a.score)
@@ -18,7 +23,7 @@ class Filter {
 		else if (b.score < a.score)
 			return -1;
 		else
-			return 0;
+			return Utf8.compare(a.string, b.string);
 	}
 
 	public static function filter<T>(candidates:Array<T>, query:String, queryHasSlashes:Bool, ?options:{
@@ -30,6 +35,7 @@ class Filter {
 		if (query != null && query.length > 0) {
 			var scoredCandidates:Array<{
 				candidate:Dynamic,
+				string:String,
 				score:Float
 			}> = [];
 			for (i in 0...candidates.length) {
@@ -45,6 +51,7 @@ class Filter {
 				if (score > 0) {
 					scoredCandidates.push({
 						candidate: candidate,
+						string: string,
 						score: score
 					});
 				}
@@ -57,5 +64,5 @@ class Filter {
 		}
 		return candidates;
     }
-    
+
 }

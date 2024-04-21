@@ -193,7 +193,6 @@ class Fzf {
 
 	function updateFilter():Void {
 		// TODO: need to rework that lib to:
-		// 	- keep stable sort on same score
 		// 	- handle highlighting
 		filteredItems = Fuzzaldrin.filter(items, currentFilter);
 		currentItem = 0;
