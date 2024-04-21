@@ -1,4 +1,7 @@
 import fzf.Fzf;
+import tools.Utils;
+
+using tools.NullTools;
 
 class HaxeSelect {
 	public static function main() {
@@ -13,10 +16,7 @@ class HaxeSelect {
 	}
 
 	public static function fzf():Void {
-		var prompt = 'Current: ' + switch Utils.getCurrent() {
-			case null | "": 'none';
-			case v: v;
-		};
+		final prompt = 'Current: ' + Utils.getCurrentName().or(Utils.getCurrent().or('none'));
 
 		new Fzf(Utils.getVersions(), prompt, res -> {
 			switch res {

@@ -1,9 +1,9 @@
 import eval.luv.File.FileSync;
 import haxe.io.Path;
 import sys.FileSystem;
-import sys.io.Process;
 
 import tools.DownloadHelper;
+import tools.Utils;
 
 class HaxeDownload {
 	public static function main() {
@@ -55,24 +55,7 @@ class HaxeDownload {
 			FileSystem.deleteFile(path);
 
 			final releasePath = Path.join([FileSystem.absolutePath(Utils.releasesDir), out]);
-
-			if (alias == null) {
-				final exe = switch Sys.systemName() {
-					case "Windows": "haxe.exe";
-					case _: "haxe";
-				};
-
-				final proc = new Process(Path.join([releasePath, exe]), ["--version"]);
-				try {
-					final code = proc.exitCode();
-					if (code > 0) throw proc.stderr.readAll().toString();
-					alias = StringTools.trim(proc.stdout.readAll().toString());
-					proc.close();
-				} catch (e) {
-					proc.close();
-					throw e;
-				}
-			}
+			if (alias == null) alias = Utils.getVersionString(releasePath);
 
 			final versionPath = Path.join([Utils.versionsDir, alias]);
 			try FileSystem.deleteFile(versionPath) catch(_) {}

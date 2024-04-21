@@ -196,7 +196,6 @@ class Fzf {
 		// 	- keep stable sort on same score
 		// 	- handle highlighting
 		filteredItems = Fuzzaldrin.filter(items, currentFilter);
-		filteredItems.reverse(); // Kinda matches fzf behavior but not quite
 		currentItem = 0;
 	}
 }
