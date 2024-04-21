@@ -26,6 +26,8 @@ class HaxeManager {
 
 				Sys.println(Utils.getCurrentName().or("") + ' (' + Utils.getCurrent() + ')');
 
+			case ["list", []]: for (v in Utils.getVersions()) Sys.println(v);
+
 			case ["--help", []]: displayUsage();
 			case ["--help", ["download"]]: HaxeDownload.displayUsage();
 			case ["--help", ["select"]]: HaxeSelect.displayUsage();

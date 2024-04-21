@@ -1,6 +1,7 @@
 package tools;
 
 import eval.luv.File;
+import haxe.Utf8;
 import haxe.io.Path;
 import sys.FileSystem;
 import sys.io.Process;
@@ -46,12 +47,13 @@ class Utils {
 		}
 	}
 
+	@:haxe.warning("-WDeprecated")
 	public static function getVersions():Array<String> {
 		if (!FileSystem.exists(versionsDir)) FileSystem.createDirectory(versionsDir);
 		if (!FileSystem.isDirectory(versionsDir)) throw '${FileSystem.absolutePath(versionsDir)} should be a directory';
 
 		final ret = FileSystem.readDirectory(versionsDir);
-		ret.sort((a,b) -> a > b ? -1 : 1);
+		ret.sort((a, b) -> Utf8.compare(b,a));
 		return ret;
 	}
 

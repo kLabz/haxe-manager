@@ -52,9 +52,6 @@ jobs:
           sh ./extra/install-all.sh
           ls -Al bin/
 
-      - name: Check list-haxe-versions
-        run: list-haxe-versions
-
   test-windows:
     strategy:
       fail-fast: false
