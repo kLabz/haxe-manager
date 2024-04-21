@@ -1,3 +1,5 @@
+import fzf.Fzf;
+
 class HaxeSelect {
 	public static function main() {
 		Utils.wrap(() -> run(Sys.args()));
@@ -8,6 +10,21 @@ class HaxeSelect {
 			case [v]: select(v);
 			case _: displayUsage();
 		}
+	}
+
+	public static function fzf():Void {
+		var prompt = 'Current: ' + switch Utils.getCurrent() {
+			case null | "": 'none';
+			case v: v;
+		};
+
+		new Fzf(Utils.getVersions(), prompt, res -> {
+			switch res {
+				case None: Sys.println('No Haxe version selected');
+				case Some(v): select(v);
+			}
+		});
+
 	}
 
 	public static function select(v:String):Void {

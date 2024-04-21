@@ -5,16 +5,7 @@ class HaxeManager {
 
 	public static function run(args:Array<String>):Void {
 		switch args.shift() {
-			case null:
-				var prompt = switch Utils.getCurrent() {
-					case null | "": null;
-					case v: 'Current: $v';
-				};
-
-				new fzf.Fzf(Utils.getVersions(), prompt, res -> {
-					trace(res);
-				});
-
+			case null: HaxeSelect.fzf();
 			case "download": HaxeDownload.run(args);
 			case "select": HaxeSelect.run(args);
 			case "--help": displayUsage();
