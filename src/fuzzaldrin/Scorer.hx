@@ -1,7 +1,18 @@
 package fuzzaldrin;
 
+typedef Score = {
+	score:Float,
+	parts:Array<MatchPart>
+}
+
+enum MatchPart {
+	RawString(s:String);
+	MatchedString(s:String);
+}
+
 class Scorer {
 
+	// TODO
 	public static function basenameScore(string:String, query:String, score:Float):Float {
 		var index = string.length - 1;
 		while (string.charAt(index) == Fuzzaldrin.PATH_SEPARATOR) {
@@ -32,7 +43,7 @@ class Scorer {
 		if (base == string) {
 			score *= 2;
 		} else if (base != null && base.length > 0) {
-			score += Scorer.score(base, query);
+			score += Scorer.score(base, query).score;
 		}
 		var segmentCount = slashCount + 1;
 		var depth = Math.max(1, 10 - segmentCount);
@@ -40,18 +51,19 @@ class Scorer {
 		return score;
 	}
 
-	public static function score(string:String, query:String):Float {
-		if (string == query) {
-			return 1;
+	public static function score(string:String, query:String):Score {
+		var initString = string;
+		if (string == query || queryIsLastPathSegment(string, query)) {
+			return {score: 1, parts: [RawString(string)]};
 		}
-		if (queryIsLastPathSegment(string, query)) {
-			return 1;
-		}
+
 		var totalCharacterScore:Float = 0;
 		var queryLength = query.length;
 		var stringLength = string.length;
 		var indexInQuery = 0;
 		var indexInString = 0;
+		var parts = [];
+
 		while (indexInQuery < queryLength) {
 			var character = query.charAt(indexInQuery++);
 			var lowerCaseIndex = string.indexOf(character.toLowerCase());
@@ -60,10 +72,38 @@ class Scorer {
 			if (minIndex == -1) {
 				minIndex = Std.int(Math.max(lowerCaseIndex, upperCaseIndex));
 			}
-			indexInString = minIndex;
-			if (indexInString == -1) {
-				return 0;
+
+			if (minIndex == -1) {
+				return {score: 0, parts: [RawString(initString)]};
 			}
+
+			var part = parts.pop();
+			if (part == null) {
+				if (indexInString > 0 || minIndex > 0) {
+					if (minIndex == 0) parts = [RawString(string.substring(0, indexInString))];
+					else parts = [RawString(string.substring(0, indexInString + minIndex))];
+				}
+
+				parts.push(MatchedString(string.charAt(minIndex)));
+			} else {
+				switch part {
+					case RawString(s):
+						if (minIndex == 0) parts.push(part);
+						else parts.push(RawString(s + string.substring(0, minIndex)));
+						parts.push(MatchedString(string.charAt(minIndex)));
+
+					case MatchedString(s):
+						if (minIndex > 0) {
+							parts.push(part);
+							parts.push(RawString(string.substring(0, minIndex)));
+							parts.push(MatchedString(string.charAt(minIndex)));
+						} else {
+							parts.push(MatchedString(s + string.charAt(minIndex)));
+						}
+				}
+			}
+
+			indexInString = minIndex;
 			var characterScore = 0.1;
 			if (string.charAt(indexInString) == character) {
 				characterScore += 0.1;
@@ -80,8 +120,13 @@ class Scorer {
 			string = string.substring(indexInString + 1, stringLength);
 			totalCharacterScore += characterScore;
 		}
+
+		if (string.length > 0) parts.push(RawString(string));
 		var queryScore = totalCharacterScore / queryLength;
-		return ((queryScore * (queryLength / stringLength)) + queryScore) / 2;
+		return {
+			score: ((queryScore * (queryLength / stringLength)) + queryScore) / 2,
+			parts: parts
+		}
 	}
 
 	static function queryIsLastPathSegment(string:String, query:String):Bool {
@@ -90,5 +135,5 @@ class Scorer {
         }
         return false;
     }
-    
+
 }

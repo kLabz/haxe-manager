@@ -6,7 +6,8 @@ import eval.luv.Tty;
 import haxe.ds.Option;
 
 import ANSI;
-import fuzzaldrin.Fuzzaldrin;
+import fuzzaldrin.Filter;
+import fuzzaldrin.Scorer;
 
 class Fzf {
 	final items:Array<String>;
@@ -19,7 +20,7 @@ class Fzf {
 	var cursor:Int = 0;
 	var currentItem:Int = 0;
 	var currentFilter:String = "";
-	var filteredItems:Array<String> = [];
+	var filteredItems:Array<ResolvedCandidate<String>> = [];
 
 	static inline var CTRL_A = 1;
 	static inline var CTRL_B = 2;
@@ -49,13 +50,22 @@ class Fzf {
 	// TODO: detect support!
 	// static inline var LightBlue = ANSI.CSI + '94m';
 	static inline var LightBlue = ANSI.CSI + '38;5;111m';
+	static inline var LightGreen = ANSI.CSI + '38;5;108m';
+	static inline var LighterGreen = ANSI.CSI + '38;5;144m';
 	static inline var Grey = ANSI.CSI + '38;5;241m';
 	static inline var GreyBack = ANSI.CSI + '48;5;236m';
 
 	public function new(items:Array<String>, ?prompt:String = "", cb:Option<String>->Void) {
 		this.items = items;
 		this.cb = cb;
-		this.filteredItems = items.copy();
+		this.filteredItems = items.map(i -> {
+			candidate: i,
+			string: i,
+			score: {
+				score: 1.0,
+				parts: [RawString(i)]
+			}
+		});
 
 		// TODO: strip sequences in prompt input?
 		this.strippedPrompt = (prompt == "" ? "" : prompt + " ") + "> ";
@@ -107,7 +117,7 @@ class Fzf {
 
 				case [[], ENTER]:
 					if (filteredItems.length == 0) return exitWith(None);
-					return exitWith(Some(filteredItems[currentItem]));
+					return exitWith(Some(filteredItems[currentItem].candidate));
 
 				case [[ESC], LEFT_BRACKET]:
 					esc = [ESC, LEFT_BRACKET];
@@ -163,11 +173,19 @@ class Fzf {
 				continue;
 			}
 
+			var item = "";
+			for (p in filteredItems[i].score.parts) {
+				switch (p) {
+					case RawString(s): item += s;
+					case MatchedString(s): item += LightGreen + s + ANSI.set(DefaultForeground);
+				}
+			}
+
 			// TODO: (+ handle scroll) (+ scrollbar?) (+ highlight fuzzy)
 			if (i == currentItem)
-				Sys.print(GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + filteredItems[i] + ANSI.set(Off));
+				Sys.print(GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + item + ANSI.set(Off));
 			else
-				Sys.print(GreyBack + " " + ANSI.set(Off) + " " + filteredItems[i]);
+				Sys.print(GreyBack + " " + ANSI.set(Off) + " " + item);
 
 			Sys.print(ANSI.eraseLineToEnd());
 		}
@@ -175,7 +193,7 @@ class Fzf {
 		Sys.print(ANSI.setXY(0, geom.height - 1));
 		final index = "  " + filteredItems.length + '/' + items.length + " ";
 		final pad = [for (_ in (index.length)...(geom.width-1)) '―'].join("");
-		Sys.print(Grey + index + ANSI.set(Bold) + pad + ANSI.set(Off));
+		Sys.print(LighterGreen + index + Grey + ANSI.set(Bold) + pad + ANSI.set(Off));
 
 		Sys.print(ANSI.setXY(0, geom.height));
 		Sys.print(prompt + currentFilter + ANSI.eraseLineToEnd());
@@ -194,7 +212,7 @@ class Fzf {
 	function updateFilter():Void {
 		// TODO: need to rework that lib to:
 		// 	- handle highlighting
-		filteredItems = Fuzzaldrin.filter(items, currentFilter);
+		filteredItems = Filter.filterExt(items, currentFilter, false);
 		currentItem = 0;
 	}
 }

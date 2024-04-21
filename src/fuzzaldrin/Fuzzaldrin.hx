@@ -18,6 +18,7 @@ class Fuzzaldrin {
 		return Filter.filter(candidates, query, queryHasSlashes, options);
 	}
 
+	// TODO: expose match parts
 	public static function score(string:String, query:String):Float {
 		if (string == null || string.length == 0) {
 			return 0;
@@ -30,7 +31,7 @@ class Fuzzaldrin {
 		}
 		var queryHasSlashes = query.indexOf(PATH_SEPARATOR) != -1;
 		query = RE_SPACE.replace(query, '');
-		var score = Scorer.score(string, query);
+		var score = Scorer.score(string, query).score;
 		if (!queryHasSlashes) {
 			score = Scorer.basenameScore(string, query, score);
 		}
