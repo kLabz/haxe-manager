@@ -10,6 +10,7 @@ MKDIR "bin"
 REM Install base tools
 ECHO F | XCOPY /S /Q /Y /F "extra/haxe.bat" "bin/haxe.bat"
 ECHO F | XCOPY /S /Q /Y /F "extra/haxelib.bat" "bin/haxelib.bat"
+ECHO F | XCOPY /S /Q /Y /F "extra/hx.bat" "bin/hx.bat"
 ECHO F | XCOPY /S /Q /Y /F "extra/hx-download.bat" "bin/hx-download.bat"
 ECHO F | XCOPY /S /Q /Y /F "extra/hx-select.bat" "bin/hx-select.bat"
 
@@ -18,6 +19,7 @@ MKLINK /D "versions/5.0.0-alpha.1+%HAXE_VER%" "%ROOT%/build/windows64_%HAXE_VER%
 MKLINK /D "current" "%ROOT%/build/windows64_%HAXE_VER%"
 
 REM Prebuild tools
+%ROOT%/build/windows64_%HAXE_VER%/haxe.exe --cwd %ROOT% build-hx.hxml
 %ROOT%/build/windows64_%HAXE_VER%/haxe.exe --cwd %ROOT% build-select.hxml
 %ROOT%/build/windows64_%HAXE_VER%/haxe.exe --cwd %ROOT% build-download.hxml
 

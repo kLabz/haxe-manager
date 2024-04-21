@@ -34,12 +34,14 @@ jobs:
         run: |
           hx-download latest
           hx-download 4.3.4
-          hx-download nightly 569e52e
-          hx-download nightly 569e52e
+          hx download nightly 569e52e
+          hx download nightly 569e52e
           haxe --version
           hx-select dev
           haxe --version
-          hx-select 4.3.4
+          hx 4.3.4
+          haxe --version
+          hx select dev
           haxe --version
 
       - name: Install extra tools
@@ -81,11 +83,13 @@ jobs:
         run: |
           hx-download latest
           hx-download 4.3.4
-          hx-download nightly 569e52e
-          hx-download nightly 569e52e
+          hx download nightly 569e52e
+          hx download nightly 569e52e
           haxe --version
           hx-select dev
           haxe --version
-          hx-select 4.3.4
+          hx 4.3.4
+          haxe --version
+          hx select dev
           haxe --version
 

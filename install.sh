@@ -12,29 +12,14 @@ cp extra/hx bin/
 cp extra/hx-download bin/
 cp extra/hx-select bin/
 
-# Install fzf if needed
-# TODO remove this
-if ! [ -x "$(command -v fzf)" ]; then
-	cd "$ROOT/bin"
-
-	BUILD_OS="linux"
-	if [[ "$OSTYPE" == "darwin"* ]]; then
-		BUILD_OS="darwin"
-	fi
-
-	wget "https://github.com/junegunn/fzf-bin/releases/download/0.17.4/fzf-0.17.4-${BUILD_OS}_amd64.tgz"
-	tar -xf "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
-	rm "fzf-0.17.4-${BUILD_OS}_amd64.tgz"
-	cd - > /dev/null
+BUILD_OS="linux64"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	BUILD_OS="mac"
 fi
+
 
 # Setup included Haxe version
 if ! [ -e "versions/5.0.0-alpha.1+$HAXE_VER" ]; then
-	BUILD_OS="linux64"
-	if [[ "$OSTYPE" == "darwin"* ]]; then
-		BUILD_OS="mac"
-	fi
-
 	ln -s "$ROOT/build/${BUILD_OS}_$HAXE_VER" "versions/5.0.0-alpha.1+$HAXE_VER"
 fi
 if ! [ -e "current" ]; then
@@ -52,6 +37,7 @@ if ! [ -e "bin/haxelib" ]; then
 fi
 
 # Prebuild tools
+HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-hx.hxml
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-select.hxml
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-download.hxml
 

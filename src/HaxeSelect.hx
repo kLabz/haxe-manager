@@ -5,15 +5,17 @@ class HaxeSelect {
 
 	public static function run(args:Array<String>):Void {
 		switch args {
-			case [v]:
-				if (Utils.hasVersion(v)) Utils.selectVersion(v, true);
-				else Utils.selectRelease(v);
-
-				Sys.println('Switched to $v');
-				Sys.command("haxe", ["-version"]);
-
+			case [v]: select(v);
 			case _: displayUsage();
 		}
+	}
+
+	public static function select(v:String):Void {
+		if (Utils.hasVersion(v)) Utils.selectVersion(v, true);
+		else Utils.selectRelease(v);
+
+		Sys.println('Switched to $v');
+		Sys.command("haxe", ["-version"]);
 	}
 
 	static function displayUsage() {
