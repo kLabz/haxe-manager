@@ -160,13 +160,11 @@ class Fzf {
 					esc = [];
 
 				case [[ESC, LEFT_BRACKET], ARROW_UP] | [[], CTRL_K]:
-					currentItem++;
-					if (currentItem >= filteredItems.length) currentItem = 0;
+					if (currentItem < filteredItems.length - 1) currentItem++;
 					esc = [];
 
 				case [[ESC, LEFT_BRACKET], ARROW_DOWN] | [[], CTRL_J]:
-					currentItem--;
-					if (currentItem < 0) currentItem = filteredItems.length - 1;
+					if (currentItem > 0) currentItem--;
 					esc = [];
 
 				case [[ESC, LEFT_BRACKET], 49]: esc.push(49);
