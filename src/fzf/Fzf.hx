@@ -17,7 +17,7 @@ class Fzf {
 	final strippedPrompt:String;
 	final tty:Tty;
 
-	// TODO: scroll x_x
+	var scroll:Int = 0;
 	var cursor:Int = 0;
 	var currentItem:Int = 0;
 	var currentFilter:String = "";
@@ -196,29 +196,41 @@ class Fzf {
 	function redraw():Void {
 		Sys.print(ANSI.hideCursor());
 		final geom = tty.getWinSize().resolve();
+		final height = geom.height - 2;
 
-		for (i in 0...(geom.height - 2)) {
-			Sys.print(ANSI.setXY(0, geom.height - 2 - i));
-			if (i >= filteredItems.length) {
+		if (height < filteredItems.length) {
+			if (currentItem - scroll >= height) scroll = currentItem - height + 1;
+			else if (currentItem < scroll) scroll = currentItem;
+		} else {
+			scroll = 0;
+		}
+
+		for (i in 0...height) {
+			Sys.print(ANSI.setXY(0, height - i));
+			final index = i + scroll;
+
+			if (index >= filteredItems.length) {
 				Sys.print(ANSI.insertChars(geom.width));
+				// TODO: display scroll indicator
 				continue;
 			}
 
-			var item = "";
-			for (p in filteredItems[i].score.parts) {
+			var item = filteredItems[index];
+			var itemRepr = "";
+			for (p in item.score.parts) {
 				switch (p) {
-					case RawString(s): item += s;
-					case MatchedString(s): item += LightGreen + s + ANSI.set(DefaultForeground);
+					case RawString(s): itemRepr += s;
+					case MatchedString(s): itemRepr += LightGreen + s + ANSI.set(DefaultForeground);
 				}
 			}
 
-			// TODO: (+ handle scroll) (+ scrollbar?)
-			if (i == currentItem)
-				Sys.print(GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + item + ANSI.set(Off));
+			if (index == currentItem)
+				Sys.print(GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + itemRepr + ANSI.set(Off));
 			else
-				Sys.print(GreyBack + " " + ANSI.set(Off) + " " + item);
+				Sys.print(GreyBack + " " + ANSI.set(Off) + " " + itemRepr);
 
 			Sys.print(ANSI.eraseLineToEnd());
+			// TODO: display scroll indicator
 		}
 
 		Sys.print(ANSI.setXY(0, geom.height - 1));
@@ -243,5 +255,6 @@ class Fzf {
 	function updateFilter():Void {
 		filteredItems = Filter.filterExt(items, currentFilter, false);
 		currentItem = 0;
+		scroll = 0;
 	}
 }
