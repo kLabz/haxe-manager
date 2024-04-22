@@ -31,6 +31,8 @@ class Fzf {
 	static inline var CTRL_H = 8;
 	static inline var CTRL_J = 10;
 	static inline var CTRL_K = 11;
+	static inline var CTRL_N = 14;
+	static inline var CTRL_P = 16;
 	static inline var CTRL_Q = 17;
 	static inline var CTRL_U = 21;
 	static inline var CTRL_W = 23;
@@ -159,11 +161,11 @@ class Fzf {
 					if (cursor < currentFilter.length) cursor++;
 					esc = [];
 
-				case [[ESC, LEFT_BRACKET], ARROW_UP] | [[], CTRL_K]:
+				case [[ESC, LEFT_BRACKET], ARROW_UP] | [[], CTRL_K] | [[], CTRL_P]:
 					if (currentItem < filteredItems.length - 1) currentItem++;
 					esc = [];
 
-				case [[ESC, LEFT_BRACKET], ARROW_DOWN] | [[], CTRL_J]:
+				case [[ESC, LEFT_BRACKET], ARROW_DOWN] | [[], CTRL_J] | [[], CTRL_N]:
 					if (currentItem > 0) currentItem--;
 					esc = [];
 
