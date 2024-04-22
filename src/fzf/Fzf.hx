@@ -72,6 +72,7 @@ class Fzf {
 		this.strippedPrompt = (prompt == "" ? "" : prompt + " ") + "> ";
 		this.prompt = ANSI.set(Bold) + LightBlue + this.strippedPrompt + ANSI.set(Off);
 
+		// TODO: find a way to have a proper _new_ tty
 		this.tty = Tty.init(Loop.defaultLoop(), File.stderr).resolve();
 
 		var esc = [];
@@ -211,7 +212,7 @@ class Fzf {
 				}
 			}
 
-			// TODO: (+ handle scroll) (+ scrollbar?) (+ highlight fuzzy)
+			// TODO: (+ handle scroll) (+ scrollbar?)
 			if (i == currentItem)
 				Sys.print(GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + item + ANSI.set(Off));
 			else
@@ -240,8 +241,6 @@ class Fzf {
 	}
 
 	function updateFilter():Void {
-		// TODO: need to rework that lib to:
-		// 	- handle highlighting
 		filteredItems = Filter.filterExt(items, currentFilter, false);
 		currentItem = 0;
 	}
