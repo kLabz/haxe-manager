@@ -24,7 +24,7 @@ class HaxeManager {
 				if (Sys.systemName() == "Windows")
 					throw "`hx current --full` is not supported on windows";
 
-				Sys.println(Utils.getCurrentName().or("") + ' (' + Utils.getCurrent() + ')');
+				Sys.println(Utils.getCurrentFull().or(""));
 
 			case ["list", []]: for (v in Utils.getVersions()) Sys.println(v);
 

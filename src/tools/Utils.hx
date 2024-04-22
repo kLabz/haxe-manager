@@ -75,6 +75,13 @@ class Utils {
 		};
 	}
 
+	public static function getCurrentFull():Null<String> {
+		return switch getCurrentName() {
+			case null | "": getCurrent();
+			case name: name + ' (' + getCurrent() + ')';
+		};
+	}
+
 	public static function getVersionString(path:String):Null<String> {
 		final exe = switch Sys.systemName() {
 			case "Windows": "haxe.exe";

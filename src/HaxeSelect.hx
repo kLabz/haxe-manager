@@ -16,7 +16,7 @@ class HaxeSelect {
 	}
 
 	public static function fzf():Void {
-		final prompt = 'Current: ' + Utils.getCurrentName().or(Utils.getCurrent().or('none'));
+		final prompt = 'Current: ' + Utils.getCurrentFull().or('none');
 
 		new Fzf(Utils.getVersions(), prompt, res -> {
 			switch res {
