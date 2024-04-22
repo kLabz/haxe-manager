@@ -1,4 +1,4 @@
-package;
+package ansi;
 
 import haxe.macro.Expr;
 
@@ -53,7 +53,7 @@ typedef Sequence = {
 }
 
 #if !macro
-@:build(ANSI.build())
+@:build(ansi.ANSI.build())
 #end
 class ANSI {
 

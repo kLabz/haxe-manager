@@ -1,4 +1,4 @@
-import ANSI;
+import ansi.ANSI;
 import fzf.Fzf;
 import tools.Utils;
 

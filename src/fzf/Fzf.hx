@@ -5,7 +5,7 @@ import eval.luv.Loop;
 import eval.luv.Tty;
 import haxe.ds.Option;
 
-import ANSI;
+import ansi.ANSI;
 import fuzzaldrin.Filter;
 import fuzzaldrin.Scorer;
 import fzf.WordNav;

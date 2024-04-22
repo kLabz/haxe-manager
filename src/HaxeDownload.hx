@@ -1,4 +1,4 @@
-import ANSI;
+import ansi.ANSI;
 import eval.luv.File.FileSync;
 import haxe.io.Path;
 import sys.FileSystem;
