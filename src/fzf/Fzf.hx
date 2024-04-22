@@ -8,6 +8,7 @@ import haxe.ds.Option;
 import ANSI;
 import fuzzaldrin.Filter;
 import fuzzaldrin.Scorer;
+import fzf.WordNav;
 
 class Fzf {
 	final items:Array<String>;
@@ -94,9 +95,16 @@ class Fzf {
 					return exitWith(None);
 
 				case [[], CTRL_W]:
-					if (currentFilter.length > 0) {
-						trace("TODO: delete to start of word");
-						updateFilter();
+					switch WordNav.navLeft(cursor, currentFilter) {
+						case Noop:
+						case EOF:
+							currentFilter = currentFilter.substring(cursor);
+							cursor = 0;
+							updateFilter();
+						case NavTo(i):
+							currentFilter = currentFilter.substring(0, i) + currentFilter.substring(cursor);
+							cursor = i;
+							updateFilter();
 					}
 
 				case [[], DELETE]:
@@ -126,12 +134,28 @@ class Fzf {
 					// trace(esc, ch);
 					esc = [ESC, ch];
 
+				case [[ESC, LEFT_BRACKET, 49, 59, 53], ARROW_LEFT]:
+					switch WordNav.navLeft(cursor, currentFilter) {
+						case Noop:
+						case EOF: cursor = 0;
+						case NavTo(i): cursor = i;
+					}
+					esc = [];
+
+				case [[ESC, LEFT_BRACKET, 49, 59, 53], ARROW_RIGHT]:
+					switch WordNav.navRight(cursor, currentFilter) {
+						case Noop:
+						case EOF: cursor = currentFilter.length;
+						case NavTo(i): cursor = i;
+					}
+					esc = [];
+
 				case [[ESC, LEFT_BRACKET], ARROW_LEFT] | [[], CTRL_B]:
 					if (cursor > 0) cursor--;
 					esc = [];
 
 				case [[ESC, LEFT_BRACKET], ARROW_RIGHT] | [[], CTRL_F]:
-					if (cursor < currentFilter.length - 1) cursor++;
+					if (cursor < currentFilter.length) cursor++;
 					esc = [];
 
 				case [[ESC, LEFT_BRACKET], ARROW_UP] | [[], CTRL_K]:
@@ -143,6 +167,12 @@ class Fzf {
 					currentItem--;
 					if (currentItem < 0) currentItem = filteredItems.length - 1;
 					esc = [];
+
+				case [[ESC, LEFT_BRACKET], 49]: esc.push(49);
+				case [[ESC, LEFT_BRACKET, 49], 59]: esc.push(59);
+				case [[ESC, LEFT_BRACKET, 49, 59], 53]: esc.push(53);
+				// TODO?
+				case [[ESC, LEFT_BRACKET, 49, 59, 53], _]: esc = [];
 
 				case [[ESC, _], ch]:
 					// TODO?
