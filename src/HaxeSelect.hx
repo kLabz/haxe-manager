@@ -11,7 +11,9 @@ class HaxeSelect {
 	public static function run(args:Array<String>):Void {
 		switch args {
 			case [v]: select(v);
-			case _: displayUsage();
+			case _:
+				Sys.println("hx select: missing argument(s)\n");
+				displayUsage();
 		}
 	}
 
@@ -36,7 +38,10 @@ class HaxeSelect {
 	}
 
 	public static function displayUsage() {
-		// TODO: proper help message
-		Sys.println("Please specify a haxe version");
+		// TODO: more details, mention release name support
+		Sys.println([
+			"Usage: hx select <VERSION>",
+			"       Select installed Haxe version VERSION",
+		].join("\n"));
 	}
 }
