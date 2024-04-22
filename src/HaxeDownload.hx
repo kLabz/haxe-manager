@@ -1,3 +1,4 @@
+import ANSI;
 import eval.luv.File.FileSync;
 import haxe.io.Path;
 import sys.FileSystem;
@@ -67,20 +68,27 @@ class HaxeDownload {
 	}
 
 	public static function displayUsage() {
+		var ORANGE = ANSI.CSI + '38;5;208m';
+		var RESET = ANSI.set(Off);
+		var UNDERLINE = ANSI.set(Underline);
+		var UNDERLINE_OFF = ANSI.set(UnderlineOff);
+		var BOLD = ANSI.set(Bold);
+		var BOLD_OFF = ANSI.set(BoldOff);
+
 		Sys.println([
-			"Usage: hx download <VERSION> [AS_NAME]",
-			"       Download official release VERSION (e.g., 4.3.0)",
-			"       Save as AS_NAME if provided or use version number",
-			"",
-			"   or: hx download latest [AS_NAME]",
-			"       Download latest nightly",
-			"       Save as AS_NAME if provided or use version number (with revision)",
-			"",
-			"   or: hx download nightly <VERSION> [AS_NAME]",
-			"   or: hx download aws <VERSION> [AS_NAME]",
-			"       Download specific nightly VERSION (e.g., 2023-01-22_development_dd5e467)",
-			"       Save as AS_NAME if provided or use version number (with revision)",
-			"       Note: short hash VERSION is also supported for development nightlies (e.g. dd5e467)"
+			'Usage: ${ORANGE}hx download ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
+			'       Download official release ${BOLD}VERSION${BOLD_OFF} (e.g., ${BOLD}4.3.0${BOLD_OFF})',
+			'       Save as ${BOLD}AS_NAME${BOLD_OFF} if provided or use version number',
+			'',
+			'   or: ${ORANGE}hx download latest ${UNDERLINE}[AS_NAME]${RESET}',
+			'       Download latest nightly',
+			'       Save as ${BOLD}AS_NAME${BOLD_OFF} if provided or use version number (with revision)',
+			'',
+			'   or: ${ORANGE}hx download nightly ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
+			'   or: ${ORANGE}hx download aws ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
+			'       Download specific nightly ${BOLD}VERSION${BOLD_OFF} (e.g., ${BOLD}2023-01-22_development_dd5e467${BOLD_OFF})',
+			'       Save as ${BOLD}AS_NAME${BOLD_OFF} if provided or use version number (with revision)',
+			'       Note: short hash ${BOLD}VERSION${BOLD_OFF} is also supported for development nightlies (e.g. ${BOLD}dd5e467${BOLD_OFF})'
 		].join("\n"));
 	}
 }

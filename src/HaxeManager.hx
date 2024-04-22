@@ -1,5 +1,7 @@
 import tools.Utils;
 
+import ANSI;
+
 using tools.NullTools;
 
 class HaxeManager {
@@ -38,7 +40,43 @@ class HaxeManager {
 	}
 
 	static function displayUsage() {
-		// TODO: proper help message
-		Sys.println("TODO help message");
+		var ORANGE = ANSI.CSI + '38;5;208m';
+		var RESET = ANSI.set(Off);
+		var UNDERLINE = ANSI.set(Underline);
+		var UNDERLINE_OFF = ANSI.set(UnderlineOff);
+		var BOLD = ANSI.set(Bold);
+		var BOLD_OFF = ANSI.set(BoldOff);
+
+		Sys.println([
+			'${ORANGE}hx - Haxe Manager cli tool${RESET}',
+			'${UNDERLINE}https://github.com/kLabz/haxe-manager${UNDERLINE_OFF}',
+			'',
+			'Usage: ${ORANGE}hx${RESET}',
+			'       Interactive version switcher for versions available locally',
+			'',
+			'   or: ${ORANGE}hx download ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
+			'   or: ${ORANGE}hx download nightly ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
+			'   or: ${ORANGE}hx download latest ${UNDERLINE}[AS_NAME]${RESET}',
+			'       Install Haxe releases or nightlies',
+			'',
+			'   or: ${ORANGE}hx ${UNDERLINE}<VERSION>${RESET}',
+			'   or: ${ORANGE}hx select ${UNDERLINE}<VERSION>${RESET}',
+			'       Switch to installed Haxe version ${BOLD}VERSION${BOLD_OFF}',
+			'',
+			'   or: ${ORANGE}hx current${RESET}',
+			'   or: ${ORANGE}hx current --name${RESET}',
+			'   or: ${ORANGE}hx current --full${RESET}',
+			'       Display current Haxe version string',
+			'       ${BOLD}--name${BOLD_OFF} will display the name under which this version has been installed',
+			'       ${BOLD}--full${BOLD_OFF} will display both name and version string',
+			'',
+			'   or: ${ORANGE}hx list${RESET}',
+			'       Display all installed Haxe versions',
+			'',
+			'   or: ${ORANGE}hx --help${RESET}',
+			'   or: ${ORANGE}hx --help download${RESET}',
+			'   or: ${ORANGE}hx --help select${RESET}',
+			'       Display help about available commands'
+		].join("\n"));
 	}
 }

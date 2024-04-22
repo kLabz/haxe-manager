@@ -1,3 +1,4 @@
+import ANSI;
 import fzf.Fzf;
 import tools.Utils;
 
@@ -38,10 +39,17 @@ class HaxeSelect {
 	}
 
 	public static function displayUsage() {
+		var ORANGE = ANSI.CSI + '38;5;208m';
+		var RESET = ANSI.set(Off);
+		var UNDERLINE = ANSI.set(Underline);
+		var UNDERLINE_OFF = ANSI.set(UnderlineOff);
+		var BOLD = ANSI.set(Bold);
+		var BOLD_OFF = ANSI.set(BoldOff);
+
 		// TODO: more details, mention release name support
 		Sys.println([
-			"Usage: hx select <VERSION>",
-			"       Select installed Haxe version VERSION",
+			'Usage: ${ORANGE}hx select ${UNDERLINE}<VERSION>${RESET}',
+			'       Switch to installed Haxe version ${BOLD}VERSION${BOLD_OFF}',
 		].join("\n"));
 	}
 }
