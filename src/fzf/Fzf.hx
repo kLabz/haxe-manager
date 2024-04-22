@@ -194,24 +194,34 @@ class Fzf {
 	}
 
 	function redraw():Void {
-		Sys.print(ANSI.hideCursor());
+		var screen = "";
 		final geom = tty.getWinSize().resolve();
 		final height = geom.height - 2;
+		final hasScroll = height < filteredItems.length;
 
-		if (height < filteredItems.length) {
+		if (hasScroll) {
 			if (currentItem - scroll >= height) scroll = currentItem - height + 1;
 			else if (currentItem < scroll) scroll = currentItem;
 		} else {
 			scroll = 0;
 		}
 
+		final scrollStart = hasScroll ? Math.round((scroll / filteredItems.length) * height) : 0;
+		final scrollEnd = hasScroll ? Math.round(((scroll+height-1) / filteredItems.length) * height) : 0;
+
 		for (i in 0...height) {
-			Sys.print(ANSI.setXY(0, height - i));
+			var line = ANSI.setXY(0, height - i);
 			final index = i + scroll;
 
 			if (index >= filteredItems.length) {
-				Sys.print(ANSI.insertChars(geom.width));
-				// TODO: display scroll indicator
+				if (hasScroll) {
+					line += ANSI.insertChars(geom.width - 1);
+					line += (scrollStart <= i && i <= scrollEnd) ? '-' : ':';
+				} else {
+					line += ANSI.insertChars(geom.width);
+				}
+
+				screen += line;
 				continue;
 			}
 
@@ -225,24 +235,29 @@ class Fzf {
 			}
 
 			if (index == currentItem)
-				Sys.print(GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + itemRepr + ANSI.set(Off));
+				line += GreyBack + ANSI.set(Red) + "> " + ANSI.set(Off) + ANSI.set(Bold) + GreyBack + itemRepr + ANSI.set(Off);
 			else
-				Sys.print(GreyBack + " " + ANSI.set(Off) + " " + itemRepr);
+				line += GreyBack + " " + ANSI.set(Off) + " " + itemRepr;
 
-			Sys.print(ANSI.eraseLineToEnd());
-			// TODO: display scroll indicator
+			line += ANSI.eraseLineToEnd();
+			if (hasScroll) {
+				line += ANSI.setX(geom.width);
+				line += (scrollStart <= i && i <= scrollEnd) ? ANSI.set(Bold) + Grey + '│' + ANSI.set(Off) : ' ';
+			}
+
+			screen += line;
 		}
 
-		Sys.print(ANSI.setXY(0, geom.height - 1));
+		screen += ANSI.setXY(0, geom.height - 1);
 		final index = "  " + filteredItems.length + '/' + items.length + " ";
 		final pad = [for (_ in (index.length)...(geom.width-1)) '―'].join("");
-		Sys.print(LighterGreen + index + Grey + ANSI.set(Bold) + pad + ANSI.set(Off));
+		screen += LighterGreen + index + Grey + ANSI.set(Bold) + pad + ANSI.set(Off);
 
-		Sys.print(ANSI.setXY(0, geom.height));
-		Sys.print(prompt + currentFilter + ANSI.eraseLineToEnd());
+		screen += ANSI.setXY(0, geom.height);
+		screen += prompt + currentFilter + ANSI.eraseLineToEnd();
 
-		Sys.print(ANSI.setX(cursor + strippedPrompt.length + 1)); // Why +1 here?
-		Sys.print(ANSI.showCursor());
+		screen += ANSI.setX(cursor + strippedPrompt.length + 1); // Why +1 here?
+		Sys.print(screen);
 	}
 
 	function exitWith(value:Option<String>) {
