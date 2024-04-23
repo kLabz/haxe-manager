@@ -6,6 +6,8 @@ import haxe.io.Path;
 import sys.FileSystem;
 import sys.io.Process;
 
+import ansi.ANSI;
+
 class Utils {
 	public static inline var binDir = "bin";
 	public static inline var currentDir = "current";
@@ -17,8 +19,19 @@ class Utils {
 	}
 
 	public static function failWith(msg:String):Void {
-		Sys.stderr().writeString('Error: $msg\n');
+		displayError(msg);
 		Sys.exit(1);
+	}
+
+	public static function displayError(msg:String):Void {
+		Sys.stderr().writeString(
+			ANSI.set(RedBack) + ANSI.set(Black) +
+			' ERROR ' +
+			ANSI.set(Off) +
+			' ' + msg + '\n'
+		);
+
+		Sys.stderr().flush();
 	}
 
 	public static function getBuildUrl(v:String):Array<String> {

@@ -3,6 +3,7 @@ import eval.luv.File.FileSync;
 import haxe.io.Path;
 import sys.FileSystem;
 
+import haxelib.SemVer;
 import tools.DownloadHelper;
 import tools.Utils;
 
@@ -23,12 +24,15 @@ class HaxeDownload {
 			case [f] if (FileSystem.exists(f)): throw "TODO";
 			case [f, alias] if (FileSystem.exists(f)): throw "TODO";
 
-			// TODO: only sane looking semver should be considered here
-			case [v]: downloadRelease(v);
-			case [v, alias]: downloadRelease(v, alias);
+			case [v] if (SemVer.isValid(v)): downloadRelease(v);
+			case [v, alias] if (SemVer.isValid(v)): downloadRelease(v, alias);
+
+			case [v] | [v, _]:
+				Utils.displayError('hx download: $v is not a valid release version\n');
+				displayUsage();
 
 			case _:
-				Sys.println("hx download: missing argument(s)\n");
+				Utils.displayError("hx download: missing argument(s)\n");
 				displayUsage();
 		}
 	}

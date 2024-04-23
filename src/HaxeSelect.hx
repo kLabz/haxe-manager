@@ -13,7 +13,7 @@ class HaxeSelect {
 		switch args {
 			case [v]: select(v);
 			case _:
-				Sys.println("hx select: missing argument(s)\n");
+				Utils.displayError("hx select: missing argument(s)\n");
 				displayUsage();
 		}
 	}
