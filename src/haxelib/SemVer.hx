@@ -75,18 +75,6 @@ abstract SemVer(String) to String {
 
 		return 0;
 	}
-	@:to public function toValidatable():Validator.Validatable
-		return {
-			validate:
-				function ():Option<String>
-					return
-						try {
-							get_data();
-							None;
-						}
-						catch (e:Dynamic)
-							Some(Std.string(e))
-		}
 
 	inline function get_major()
 		return data.major;
