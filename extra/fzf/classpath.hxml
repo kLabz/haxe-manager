@@ -1,3 +1,0 @@
--cp /opt/haxe/extra/fzf/src/
---macro ClassPathMacro.run()
---no-output

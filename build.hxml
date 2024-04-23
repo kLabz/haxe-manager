@@ -1,0 +1,5 @@
+common.hxml
+-cp src
+--hxb build/hx.hxb
+HaxeManager
+--interp

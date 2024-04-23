@@ -2,7 +2,7 @@ name: CI
 on: push
 
 jobs:
-  build:
+  test-unix:
     strategy:
       fail-fast: false
       matrix:
@@ -11,35 +11,132 @@ jobs:
           - ubuntu-latest
     runs-on: ${{ matrix.os }}
     env:
-      HAXE_STD_PATH: "${{ github.workspace }}/std"
+      HAXE_STD_PATH: "${{ github.workspace }}/current/std"
     steps:
       - uses: actions/checkout@main
-
-      - name: Install haxe-manager
-        run: |
-          sh ./install.sh
 
       - name: Add to PATH
         run: |
           echo "${GITHUB_WORKSPACE}/bin" >> $GITHUB_PATH
 
+      - name: Install haxe-manager
+        run: |
+          ./install.sh
+          haxe --version
+
       - name: Check env
         run: |
-          echo $PATH
-          echo $GITHUB_PATH
-          echo $HAXE_STD_PATH
+          echo "PATH=${PATH}"
+          echo "GITHUB_PATH=${GITHUB_PATH}"
+          echo "HAXE_STD_PATH=${HAXE_STD_PATH}"
+
+      - name: Help messages
+        run: |
+          echo "hx --help"
+          hx --help
+          echo ""
+          echo "hx --help download"
+          hx --help download
+          echo ""
+          echo "hx --help select"
+          hx --help select
 
       - name: Check base usage
         run: |
+          echo "Download latest nightly"
+          hx download latest
+          echo "Download release"
+          hx download 4.3.4
+          echo "Download short hash nightly"
+          hx download nightly 569e52e
+          echo "Download short hash nightly (already downloaded)"
+          hx download nightly 569e52e alias
+          echo "Check Haxe version"
           haxe --version
-          hx 4.2.5
-          hx-download latest
-          hx dev
+          echo "Switch to dev"
+          hx select dev
+          echo "Check Haxe version"
+          haxe --version
+          echo "Switch to 4.3.4"
+          hx 4.3.4
+          echo "Check Haxe version"
+          haxe --version
+          echo "Switch to dev"
+          hx select dev
+          echo "Check Haxe version"
+          haxe --version
+          echo "Check hx current (normal, --name, --full)"
+          hx current
+          hx current --name
+          hx current --full
 
       - name: Install extra tools
         run: |
           sh ./extra/install-all.sh
           ls -Al bin/
 
-      - name: Check list-haxe-versions
-        run: list-haxe-versions
+  test-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    env:
+      HAXE_STD_PATH: "${{ github.workspace }}/current/std"
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Add to PATH
+        run: |
+          echo "${env:GITHUB_WORKSPACE}/bin" | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
+
+      - name: Install haxe-manager
+        run: |
+          ./install.bat
+          haxe --version
+
+      - name: Check env
+        run: |
+          echo "PATH=${env:PATH}"
+          echo "GITHUB_PATH=${env:GITHUB_PATH}"
+          echo "HAXE_STD_PATH=${env:HAXE_STD_PATH}"
+
+      - name: Help messages
+        run: |
+          echo "hx --help"
+          hx --help
+          echo ""
+          echo "hx --help download"
+          hx --help download
+          echo ""
+          echo "hx --help select"
+          hx --help select
+
+      - name: Check base usage
+        run: |
+          echo "Download latest nightly"
+          hx download latest
+          echo "Download release"
+          hx download 4.3.4
+          echo "Download short hash nightly"
+          hx download nightly 569e52e
+          echo "Download short hash nightly (already downloaded)"
+          hx download nightly 569e52e alias
+          echo "Check Haxe version"
+          haxe --version
+          echo "Switch to dev"
+          hx select dev
+          echo "Check Haxe version"
+          haxe --version
+          echo "Switch to 4.3.4"
+          hx 4.3.4
+          echo "Check Haxe version"
+          haxe --version
+          echo "Switch to dev"
+          hx select dev
+          echo "Check Haxe version"
+          haxe --version
+          echo "Check hx current"
+          hx current
+

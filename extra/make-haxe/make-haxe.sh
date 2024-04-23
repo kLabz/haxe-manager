@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 HAXE_MANAGER_ROOT="/opt/haxe"
 # TODO: make sure we're on haxe repository

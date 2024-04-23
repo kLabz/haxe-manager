@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 HAXE_MANAGER_ROOT="/opt/haxe"
 HAXE_DEV_PATH=$1

@@ -1,10 +1,7 @@
-**/node_modules/*
-**/package-lock.json
 releases/
 versions/
 builds/
-std
-bin/*
-!bin/hx
-!bin/hx-download
-!bin/hx-select
+current
+data/
+bin/
+build/*.hxb
