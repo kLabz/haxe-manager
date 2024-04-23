@@ -135,6 +135,10 @@ class Utils {
 		link(dir);
 	}
 
+	public static function getCallSite():String {
+		return Sys.getEnv("CALL_SITE");
+	}
+
 	static function unlinkCurrent():Void {
 		if (FileSystem.exists(currentDir)) FileSync.unlink(currentDir);
 	}

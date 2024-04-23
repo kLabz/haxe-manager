@@ -15,6 +15,9 @@ class HaxeManager {
 			case ["download", args]: HaxeDownload.run(args);
 			case ["select", args]: HaxeSelect.run(args);
 
+			case ["install", [file]]: HaxeDownload.installLocal(file);
+			case ["install", [file, alias]]: HaxeDownload.installLocal(file, alias);
+
 			case ["current", []]: Sys.println(Utils.getCurrent().or(""));
 			case ["current", ["--name"]]:
 				if (Sys.systemName() == "Windows")
@@ -58,6 +61,9 @@ class HaxeManager {
 			'   or: ${ORANGE}hx download nightly ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
 			'   or: ${ORANGE}hx download latest ${UNDERLINE}[AS_NAME]${RESET}',
 			'       Install Haxe releases or nightlies',
+			'',
+			'   or: ${ORANGE}hx install ${UNDERLINE}<FILE>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
+			'       Install Haxe release archive',
 			'',
 			'   or: ${ORANGE}hx ${UNDERLINE}<VERSION>${RESET}',
 			'   or: ${ORANGE}hx select ${UNDERLINE}<VERSION>${RESET}',

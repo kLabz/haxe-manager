@@ -37,6 +37,19 @@ class HaxeDownload {
 		}
 	}
 
+	public static function installLocal(file:String, ?alias:String):Void {
+		file = Path.isAbsolute(file) ? file : Path.join([Utils.getCallSite(), file]);
+		if (!FileSystem.exists(file)) throw 'Cannot find release file $file';
+
+		// Copy archive to releases/
+		final filename = Path.withoutDirectory(file);
+		final dest = Path.join([Utils.releasesDir, filename]);
+		FileSync.copyFile(file, dest);
+
+		// Install release
+		installFile(dest, filename, alias);
+	}
+
 	static function downloadLatest(?alias:String = "dev"):Void {
 		final url = Utils.getBuildUrl("latest");
 		install(url[0], url[1], alias);
@@ -58,17 +71,21 @@ class HaxeDownload {
 
 		DownloadHelper.download(url + filename, path, () -> {
 			Sys.println('Downloaded $filename');
-			final out = DownloadHelper.extract(path);
-			FileSystem.deleteFile(path);
-
-			final releasePath = Path.join([FileSystem.absolutePath(Utils.releasesDir), out]);
-			if (alias == null) alias = Utils.getVersionString(releasePath);
-
-			final versionPath = Path.join([Utils.versionsDir, alias]);
-			try FileSystem.deleteFile(versionPath) catch(_) {}
-			FileSync.symlink(releasePath, versionPath);
-			Sys.println('Installed $filename as $alias');
+			installFile(path, filename, alias);
 		});
+	}
+
+	static function installFile(path:String, filename:String, ?alias:String):Void {
+		final out = DownloadHelper.extract(path);
+		FileSystem.deleteFile(path);
+
+		final releasePath = Path.join([FileSystem.absolutePath(Utils.releasesDir), out]);
+		if (alias == null) alias = Utils.getVersionString(releasePath);
+
+		final versionPath = Path.join([Utils.versionsDir, alias]);
+		try FileSystem.deleteFile(versionPath) catch(_) {}
+		FileSync.symlink(releasePath, versionPath);
+		Sys.println('Installed $filename as $alias');
 	}
 
 	public static function displayUsage() {

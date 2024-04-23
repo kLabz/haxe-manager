@@ -34,6 +34,13 @@ Usage: hx download <VERSION> [AS_NAME]
        Note: short hash VERSION is also supported for development nightlies (e.g. dd5e467)
 ```
 
+### Installing archive
+
+If you already have an archive available (a nightly from a branch other than
+`development`, for example), you can install it with:
+
+`hx install my_haxe_release.tar.gz [AS_NAME]`
+
 ## List available versions
 
 Use `hx list` to get a list of all haxe versions available throught your (local)
