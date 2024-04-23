@@ -7,10 +7,8 @@ mkdir -p "$ROOT/releases"
 mkdir -p "$ROOT/versions"
 mkdir -p "$ROOT/bin"
 
-# Install base tools
+# Install cli launcher
 cp extra/hx bin/
-cp extra/hx-download bin/
-cp extra/hx-select bin/
 
 BUILD_OS="linux64"
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -36,10 +34,8 @@ if ! [ -e "bin/haxelib" ]; then
 	ln -s ../current/haxelib bin/haxelib
 fi
 
-# Prebuild tools
+# Prebuild cli
 HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-hx.hxml
-HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-select.hxml
-HAXE_STD_PATH="$ROOT/build/${BUILD_OS}_${HAXE_VER}/std/" "$ROOT/build/${BUILD_OS}_${HAXE_VER}/haxe" --cwd "$ROOT" build-download.hxml
 
 echo "Please add $ROOT/bin to your PATH"
 echo "Please set HAXE_STD_PATH to $ROOT/current/std"

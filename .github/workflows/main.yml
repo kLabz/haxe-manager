@@ -54,7 +54,7 @@ jobs:
           echo "Check Haxe version"
           haxe --version
           echo "Switch to dev"
-          hx-select dev
+          hx select dev
           echo "Check Haxe version"
           haxe --version
           echo "Switch to 4.3.4"
@@ -126,7 +126,7 @@ jobs:
           echo "Check Haxe version"
           haxe --version
           echo "Switch to dev"
-          hx-select dev
+          hx select dev
           echo "Check Haxe version"
           haxe --version
           echo "Switch to 4.3.4"
