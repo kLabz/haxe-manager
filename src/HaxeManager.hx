@@ -18,13 +18,13 @@ class HaxeManager {
 			case ["current", []]: Sys.println(Utils.getCurrent().or(""));
 			case ["current", ["--name"]]:
 				if (Sys.systemName() == "Windows")
-					throw "`hx current --name` is not supported on windows";
+					throw "`hx current --name` is not supported on Windows";
 
 				Sys.println(Utils.getCurrentName().or(""));
 
 			case ["current", ["--full"]]:
 				if (Sys.systemName() == "Windows")
-					throw "`hx current --full` is not supported on windows";
+					throw "`hx current --full` is not supported on Windows";
 
 				Sys.println(Utils.getCurrentFull().or(""));
 
@@ -47,7 +47,7 @@ class HaxeManager {
 		var BOLD = ANSI.set(Bold);
 		var BOLD_OFF = ANSI.set(BoldOff);
 
-		Sys.println([
+		var lines = [
 			'${ORANGE}hx - Haxe Manager cli tool${RESET}',
 			'${UNDERLINE}https://github.com/kLabz/haxe-manager${UNDERLINE_OFF}',
 			'',
@@ -63,13 +63,27 @@ class HaxeManager {
 			'   or: ${ORANGE}hx select ${UNDERLINE}<VERSION>${RESET}',
 			'       Switch to installed Haxe version ${BOLD}VERSION${BOLD_OFF}',
 			'',
-			'   or: ${ORANGE}hx current${RESET}',
-			'   or: ${ORANGE}hx current --name${RESET}',
-			'   or: ${ORANGE}hx current --full${RESET}',
-			'       Display current Haxe version string',
-			'       ${BOLD}--name${BOLD_OFF} will display the name under which this version has been installed',
-			'       ${BOLD}--full${BOLD_OFF} will display both name and version string',
-			'',
+		];
+
+		if (Sys.systemName() == "Windows") {
+			lines = lines.concat([
+				'   or: ${ORANGE}hx current${RESET}',
+				'       Display current Haxe version string',
+				'',
+			]);
+		} else {
+			lines = lines.concat([
+				'   or: ${ORANGE}hx current${RESET}',
+				'   or: ${ORANGE}hx current --name${RESET}',
+				'   or: ${ORANGE}hx current --full${RESET}',
+				'       Display current Haxe version string',
+				'       ${BOLD}--name${BOLD_OFF} will display the name under which this version has been installed',
+				'       ${BOLD}--full${BOLD_OFF} will display both name and version string',
+				'',
+			]);
+		}
+
+		lines = lines.concat([
 			'   or: ${ORANGE}hx list${RESET}',
 			'       Display all installed Haxe versions',
 			'',
@@ -77,6 +91,8 @@ class HaxeManager {
 			'   or: ${ORANGE}hx --help download${RESET}',
 			'   or: ${ORANGE}hx --help select${RESET}',
 			'       Display help about available commands'
-		].join("\n"));
+		]);
+
+		Sys.println(lines.join("\n"));
 	}
 }

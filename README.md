@@ -1,39 +1,60 @@
 # Haxe Manager
 
-Easily download and switch haxe versions on UNIX (currently tested on
-`ubuntu-latest` and `macos-latest` via github actions).
+Easily download and switch haxe versions (currently tested on
+`ubuntu-latest`, `macos-latest` and `windows-latest` via github actions).
 
-Run `install.sh` and update `PATH` / `HAXE_STD_PATH` as requested.
+Run `install.sh` (`install.bat` on Windows) and update `PATH` / `HAXE_STD_PATH` as
+requested.
 
 ## Select a version
 
-Run `hx` to display the haxe version switch (using [`fzf`](https://github.com/junegunn/fzf)).
+Run `hx` to display the haxe version switch (using a Haxe port of [`fzf`](https://github.com/junegunn/fzf)
+picker).
 
-You can also skip the version picker by using directly `hx 4.3.0` (or any other
-version/alias you have installed).
+You can also skip the version picker by using directly `hx 4.3.0` or `hx select
+4.3.0` (or any other version/alias you have installed).
 
 ## Installing / updating versions
 
-Use `hx-download` tool to download haxe versions:
+Use `hx download` tool to download haxe versions:
 
 ```
-Usage: hx-download <VERSION> [AS_NAME]
+Usage: hx download <VERSION> [AS_NAME]
        Download official release VERSION (e.g., 4.3.0)
        Save as AS_NAME if provided or use version number
 
-   or: hx-download latest [AS_NAME]
+   or: hx download latest [AS_NAME]
        Download latest nightly
        Save as AS_NAME if provided or use version number (with revision)
 
-   or: hx-download nightly <VERSION> [AS_NAME]
+   or: hx download nightly <VERSION> [AS_NAME]
+   or: hx download aws <VERSION> [AS_NAME]
        Download specific nightly VERSION (e.g., 2023-01-22_development_dd5e467)
        Save as AS_NAME if provided or use version number (with revision)
+       Note: short hash VERSION is also supported for development nightlies (e.g. dd5e467)
 ```
+
+## List available versions
+
+Use `hx list` to get a list of all haxe versions available throught your (local)
+haxe-manager.
+
+## Display currently selected version
+
+Use `hx current` to display currently selected Haxe version string (equivalent
+to running `haxe --version`).
+
+On Unix, you can also run:
+- `hx current --name` to get the name under which that version is installed
+- `hx current --full` to get both name and version string (`[NAME] ([VERSION])`)
 
 ## Included tools
 
 `extra/` folder contains optional tools you can install individually with their
 `install.sh` script or all at once with `install-all.sh`.
+
+Note that those have been written when Haxe Manager was unix only and probably
+can't work at all on Windows.
 
 ### `hxfzf`
 
@@ -72,10 +93,6 @@ the path to your repository if you're executing from somewhere else)
 ### `hx-upgrade`
 
 Update your local (git) copy of haxe-manager.
-
-### `list-haxe-versions`
-
-Get a list of all haxe versions available throught your (local) haxe-manager.
 
 ### `rofi-haxe`
 

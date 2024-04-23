@@ -35,7 +35,7 @@ class Utils {
 	}
 
 	public static function getBuildUrl(v:String):Array<String> {
-		// TODO: other OS, and arch variants
+		// TODO: arch variants
 		return switch Sys.systemName() {
 			case "Linux":
 				['https://build.haxe.org/builds/haxe/linux64/', 'haxe_$v.tar.gz'];
@@ -48,7 +48,7 @@ class Utils {
 	}
 
 	public static function getReleaseUrl(v:String):Array<String> {
-		// TODO: other OS, and arch variants
+		// TODO: arch variants
 		return switch Sys.systemName() {
 			case "Linux":
 				['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-linux64.tar.gz'];

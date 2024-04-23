@@ -41,4 +41,4 @@ done
 echo "$folders" \
   | tr '\n' ' ' \
   | xargs ag --hidden --silent -f -g ".hx" \
-  | grep -v "^/opt/haxe/std/\($targetFilter\)/"
+  | grep -v "^/opt/haxe/current/std/\($targetFilter\)/"

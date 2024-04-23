@@ -6,7 +6,6 @@ import fuzzaldrin.Scorer;
 typedef ResolvedCandidate<T> = {
 	candidate:T,
 	string:String,
-	// TODO: highlighted string AST
 	score:Score
 }
 
