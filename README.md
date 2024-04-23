@@ -55,6 +55,14 @@ On Unix, you can also run:
 - `hx current --name` to get the name under which that version is installed
 - `hx current --full` to get both name and version string (`[NAME] ([VERSION])`)
 
+## List all Haxe modules for current hxml
+
+Prints a list of all `.hx` files in all your classpath, to be passed to `fzf`
+or other tools.
+
+Usage: `hx list-modules [compile.hxml]` (will default to `build.hxml`)
+
+
 ## Included tools
 
 `extra/` folder contains optional tools you can install individually with their
@@ -62,13 +70,6 @@ On Unix, you can also run:
 
 Note that those have been written when Haxe Manager was unix only and probably
 can't work at all on Windows.
-
-### `hxfzf`
-
-Prints a list of all `.hx` files in all your classpath, to be passed to `fzf`
-or other tools.
-
-Usage: `hxfzf [compile.hxml]` (will default to `build.hxml`)
 
 ### `++haxe`
 

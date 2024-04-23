@@ -1,6 +1,5 @@
-import tools.Utils;
-
 import ansi.ANSI;
+import tools.Utils;
 
 using tools.NullTools;
 
@@ -32,6 +31,8 @@ class HaxeManager {
 				Sys.println(Utils.getCurrentFull().or(""));
 
 			case ["list", []]: for (v in Utils.getVersions()) Sys.println(v);
+			case ["list-modules", []]: HaxeModules.listModules();
+			case ["list-modules", [hxml]]: HaxeModules.listModules(hxml);
 
 			case ["--help", []]: displayUsage();
 			case ["--help", ["download"]]: HaxeDownload.displayUsage();
