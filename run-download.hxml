@@ -1,4 +1,0 @@
-common.hxml
--w -WAll
---hxb-lib build/download.hxb
---run HaxeDownload
