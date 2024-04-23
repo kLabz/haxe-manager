@@ -112,7 +112,7 @@ abstract SemVer(String) to String {
 	@:op(a != b) static inline function neq(a:SemVer, b:SemVer)
 		return compare(a, b) != 0;
 
-	static var FORMAT = ~/^(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(alpha|beta|rc)(\.(\d|[1-9]\d*))?)?$/;
+	static var FORMAT = ~/^(\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*)(-(alpha|beta|rc|preview)(\.(\d|[1-9]\d*))?)?$/;
 
 	static var cache = new Map();
 
