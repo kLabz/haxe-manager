@@ -30,19 +30,42 @@ jobs:
           echo "GITHUB_PATH=${GITHUB_PATH}"
           echo "HAXE_STD_PATH=${HAXE_STD_PATH}"
 
+      - name: Help messages
+        run: |
+          echo "hx --help"
+          hx --help
+          echo ""
+          echo "hx --help download"
+          hx --help download
+          echo ""
+          echo "hx --help select"
+          hx --help select
+
       - name: Check base usage
         run: |
-          hx-download latest
-          hx-download 4.3.4
+          echo "Download latest nightly"
+          hx download latest
+          echo "Download release"
+          hx download 4.3.4
+          echo "Download short hash nightly"
           hx download nightly 569e52e
-          hx download nightly 569e52e
+          echo "Download short hash nightly (already downloaded)"
+          hx download nightly 569e52e alias
+          echo "Check Haxe version"
           haxe --version
+          echo "Switch to dev"
           hx-select dev
+          echo "Check Haxe version"
           haxe --version
+          echo "Switch to 4.3.4"
           hx 4.3.4
+          echo "Check Haxe version"
           haxe --version
+          echo "Switch to dev"
           hx select dev
+          echo "Check Haxe version"
           haxe --version
+          echo "Check hx current (normal, --name, --full)"
           hx current
           hx current --name
           hx current --full
@@ -79,18 +102,41 @@ jobs:
           echo "GITHUB_PATH=${env:GITHUB_PATH}"
           echo "HAXE_STD_PATH=${env:HAXE_STD_PATH}"
 
+      - name: Help messages
+        run: |
+          echo "hx --help"
+          hx --help
+          echo ""
+          echo "hx --help download"
+          hx --help download
+          echo ""
+          echo "hx --help select"
+          hx --help select
+
       - name: Check base usage
         run: |
-          hx-download latest
-          hx-download 4.3.4
+          echo "Download latest nightly"
+          hx download latest
+          echo "Download release"
+          hx download 4.3.4
+          echo "Download short hash nightly"
           hx download nightly 569e52e
-          hx download nightly 569e52e
+          echo "Download short hash nightly (already downloaded)"
+          hx download nightly 569e52e alias
+          echo "Check Haxe version"
           haxe --version
+          echo "Switch to dev"
           hx-select dev
+          echo "Check Haxe version"
           haxe --version
+          echo "Switch to 4.3.4"
           hx 4.3.4
+          echo "Check Haxe version"
           haxe --version
+          echo "Switch to dev"
           hx select dev
+          echo "Check Haxe version"
           haxe --version
+          echo "Check hx current"
           hx current
 
