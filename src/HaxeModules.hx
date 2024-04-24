@@ -57,62 +57,62 @@ class HaxeModules {
 				}
 			}
 
-				final old = Sys.getCwd();
-				Sys.setCwd(cwd);
+			final old = Sys.getCwd();
+			Sys.setCwd(cwd);
 
-				function findModules(path:String) {
-					if (Path.extension(path) == "hx") return Sys.println(path);
-					if (!FileSystem.isDirectory(path)) return;
+			function findModules(path:String) {
+				if (Path.extension(path) == "hx") return Sys.println(path);
+				if (!FileSystem.isDirectory(path)) return;
 
-					path = Path.addTrailingSlash(path);
-					for (f in FileSystem.readDirectory(path)) findModules(path + f);
-				}
+				path = Path.addTrailingSlash(path);
+				for (f in FileSystem.readDirectory(path)) findModules(path + f);
+			}
 
-				function extractTargetStd(cp:String):Array<String> {
-					var path = FileSystem.fullPath(Path.isAbsolute(cp) ? cp : Path.join([cwd, cp]));
-					if (!path.startsWith(stdRoot)) return [cp, null];
+			function extractTargetStd(cp:String):Array<String> {
+				var path = FileSystem.fullPath(Path.isAbsolute(cp) ? cp : Path.join([cwd, cp]));
+				if (!path.startsWith(stdRoot)) return [cp, null];
 
-					cp = path; // Use resolved path for std
-					var path = cp.substr(stdRoot.length);
-					path = StringTools.replace(path, '\\', '/');
-					while (path.charCodeAt(0) == '/'.code) path = path.substr(1);
-					return [cp, path.split('/').shift()];
-				}
+				cp = path; // Use resolved path for std
+				var path = cp.substr(stdRoot.length);
+				path = StringTools.replace(path, '\\', '/');
+				while (path.charCodeAt(0) == '/'.code) path = path.substr(1);
+				return [cp, path.split('/').shift()];
+			}
 
-				var ignoredTargets = [];
-				if (target != null) {
-					if (target != "java" && target != "jvm") ignoredTargets = ignoredTargets.concat(["java", "jvm"]);
-					if (target != "cpp" && target != "cppia") ignoredTargets.push("cpp");
-					if (target != "js") ignoredTargets.push("js");
-					if (target != "hl") ignoredTargets.push("hl");
-					if (target != "cs") ignoredTargets.push("cs");
-					if (target != "lua") ignoredTargets.push("lua");
-					if (target != "neko") ignoredTargets.push("neko");
-					if (target != "php") ignoredTargets.push("php");
-					if (target != "python") ignoredTargets.push("python");
-					if (target != "swf") ignoredTargets.push("flash");
-				}
+			var ignoredTargets = [];
+			if (target != null) {
+				if (target != "java" && target != "jvm") ignoredTargets = ignoredTargets.concat(["java", "jvm"]);
+				if (target != "cpp" && target != "cppia") ignoredTargets.push("cpp");
+				if (target != "js") ignoredTargets.push("js");
+				if (target != "hl") ignoredTargets.push("hl");
+				if (target != "cs") ignoredTargets.push("cs");
+				if (target != "lua") ignoredTargets.push("lua");
+				if (target != "neko") ignoredTargets.push("neko");
+				if (target != "php") ignoredTargets.push("php");
+				if (target != "python") ignoredTargets.push("python");
+				if (target != "swf") ignoredTargets.push("flash");
+			}
 
-				for (cp in classpath) {
-					switch extractTargetStd(cp) {
-						// Non-std
-						case [cp, null]: findModules(cp);
+			for (cp in classpath) {
+				switch extractTargetStd(cp) {
+					// Non-std
+					case [cp, null]: findModules(cp);
 
-						// Top level std
-						case [cp, ""]:
-							cp = Path.addTrailingSlash(cp);
-							var sub = FileSystem.readDirectory(cp);
-							for (f in sub) {
-								if (ignoredTargets.contains(f)) continue;
-								findModules(cp + f);
-							}
+					// Top level std
+					case [cp, ""]:
+						cp = Path.addTrailingSlash(cp);
+						var sub = FileSystem.readDirectory(cp);
+						for (f in sub) {
+							if (ignoredTargets.contains(f)) continue;
+							findModules(cp + f);
+						}
 
-						case [_, t] if (ignoredTargets.contains(t)):
-						case [cp, _]: findModules(cp);
-					};
-				}
+					case [_, t] if (ignoredTargets.contains(t)):
+					case [cp, _]: findModules(cp);
+				};
+			}
 
-				Sys.setCwd(old);
+			Sys.setCwd(old);
 		} catch (e) {
 			Utils.displayError(Std.string(e));
 			proc.close();

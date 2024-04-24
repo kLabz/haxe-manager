@@ -1,3 +1,4 @@
+import haxelib.SemVer;
 import sys.io.Process;
 import sys.FileSystem;
 
@@ -9,18 +10,21 @@ class HaxeNightlies {
 
 	public static function resolve(ref:String):String {
 		if (ref_check.match(ref)) return getNightly(ref);
+		if (SemVer.isValid(ref)) return getNightly(ref, true);
 		return ref;
 	}
 
-	static function getNightly(ref:String):Null<String> {
+	static function getNightly(ref:String, ?isTag:Bool = false):Null<String> {
 		final date = getCommitDate(ref);
 		if (date == null) {
 			if (!updated) {
 				updateNightliesData();
-				return getNightly(ref);
+				return getNightly(ref, isTag);
 			} else {
 				throw 'Cannot find Haxe revision $ref';
 			}
+		} else if (isTag) {
+			return '${date}_refs/tags/${ref}_${getShortSha(ref)}';
 		} else {
 			if (!checkBranch(ref)) throw 'Only revisions from branch development are supported atm';
 			return '${date}_development_${getShortSha(ref)}';

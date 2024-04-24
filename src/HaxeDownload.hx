@@ -67,9 +67,11 @@ class HaxeDownload {
 	}
 
 	static function install(url:String, filename:String, ?alias:String):Void {
+		url = url + filename;
+		filename = Path.withoutDirectory(filename);
 		final path = Path.join([Utils.releasesDir, filename]);
 
-		DownloadHelper.download(url + filename, path, () -> {
+		DownloadHelper.download(url, path, () -> {
 			Sys.println('Downloaded $filename');
 			installFile(path, filename, alias);
 		});
