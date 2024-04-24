@@ -27,6 +27,9 @@ class HaxeDownload {
 			case [v] if (SemVer.isValid(v)): downloadRelease(v);
 			case [v, alias] if (SemVer.isValid(v)): downloadRelease(v, alias);
 
+			case [v] if (HaxeNightlies.isValid(v)): downloadNightly(v);
+			case [v, alias] if (HaxeNightlies.isValid(v)): downloadNightly(v, alias);
+
 			case [v] | [v, _]:
 				Utils.displayError('hx download: $v is not a valid release version\n');
 				displayUsage();

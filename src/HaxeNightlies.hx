@@ -9,9 +9,13 @@ class HaxeNightlies {
 	static var ref_check = ~/^[a-f0-9]{7,}$/i;
 
 	public static function resolve(ref:String):String {
-		if (ref_check.match(ref)) return getNightly(ref);
 		if (SemVer.isValid(ref)) return getNightly(ref, true);
+		if (isValid(ref)) return getNightly(ref);
 		return ref;
+	}
+
+	public static function isValid(ref:String):Bool {
+		return ref_check.match(ref);
 	}
 
 	static function getNightly(ref:String, ?isTag:Bool = false):Null<String> {
