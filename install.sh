@@ -13,8 +13,12 @@ cp extra/hx bin/
 BUILD_OS="linux64"
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	BUILD_OS="mac"
+else
+	ARCH=$(uname -m)
+	if [[ "$ARCH" == "arm" ]] || [[ "$ARCH" == "aarch64" ]]; then
+		BUILD_OS="linux-arm64"
+	fi
 fi
-
 
 # Setup included Haxe version
 if ! [ -e "versions/5.0.0-alpha.1+$HAXE_VER" ]; then

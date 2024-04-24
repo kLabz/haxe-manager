@@ -35,8 +35,9 @@ class Utils {
 	}
 
 	public static function getBuildUrl(v:String):Array<String> {
-		// TODO: arch variants
 		return switch Sys.systemName() {
+			case "Linux" if (isArm64()):
+				['https://build.haxe.org/builds/haxe/linux-arm64/', 'haxe_$v.tar.gz'];
 			case "Linux":
 				['https://build.haxe.org/builds/haxe/linux64/', 'haxe_$v.tar.gz'];
 			case "Mac":
@@ -48,8 +49,11 @@ class Utils {
 	}
 
 	public static function getReleaseUrl(v:String):Array<String> {
-		// TODO: arch variants
 		return switch Sys.systemName() {
+			case "Linux" if (isArm64()):
+				// TODO
+				throw "Haxe releases don't include linux-arm64 binaries yet";
+				// ['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-linux-arm64.tar.gz'];
 			case "Linux":
 				['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-linux64.tar.gz'];
 			case "Mac":
@@ -57,6 +61,18 @@ class Utils {
 			case "Windows":
 				['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-win64.zip'];
 			case os: throw 'OS $os is not supported (yet)';
+		}
+	}
+
+	static function isArm64():Bool {
+		final proc = new Process("uname", ["-m"]);
+		return try {
+			final out = StringTools.trim(proc.stdout.readAll().toString());
+			proc.close();
+			out == "arm" || out == "aarch64";
+		} catch(_) {
+			proc.close();
+			false;
 		}
 	}
 
