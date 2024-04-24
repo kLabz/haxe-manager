@@ -13,6 +13,7 @@ class HaxeManager {
 			case [null, _]: HaxeSelect.fzf();
 			case ["download", args]: HaxeDownload.run(args);
 			case ["select", args]: HaxeSelect.run(args);
+			case ["rc", _]: HaxeRc.resolve();
 
 			case ["install", [file]]: HaxeDownload.installLocal(file);
 			case ["install", [file, alias]]: HaxeDownload.installLocal(file, alias);
@@ -91,6 +92,9 @@ class HaxeManager {
 		}
 
 		lines = lines.concat([
+			'   or: ${ORANGE}hx rc${RESET}',
+			'       Install and select Haxe version specified by .haxerc file',
+			'',
 			'   or: ${ORANGE}hx list${RESET}',
 			'       Display all installed Haxe versions',
 			'',

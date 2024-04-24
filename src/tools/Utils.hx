@@ -127,6 +127,14 @@ class Utils {
 		link(dir);
 	}
 
+	public static function resolveRelease(ref:String):Null<String> {
+		for (r in FileSystem.readDirectory(releasesDir)) {
+			if (StringTools.endsWith(r, '_$ref')) return r;
+		}
+
+		return null;
+	}
+
 	public static function selectRelease(r:String):Void {
 		final dir = Path.join([releasesDir, r]);
 		if (!FileSystem.exists(dir)) throw 'Version $r is not installed';

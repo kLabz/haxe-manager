@@ -53,34 +53,35 @@ class HaxeDownload {
 		installFile(dest, filename, alias);
 	}
 
-	static function downloadLatest(?alias:String = "dev"):Void {
+	static function downloadLatest(?alias:String = "dev", ?cb:String->Void):Void {
 		final url = Utils.getBuildUrl("latest");
-		install(url[0], url[1], alias);
+		install(url[0], url[1], alias, cb);
 	}
 
-	static function downloadNightly(v:String, ?alias:String):Void {
+	public static function downloadNightly(v:String, ?alias:String, ?cb:String->Void):Void {
 		v = HaxeNightlies.resolve(v);
 		final url = Utils.getBuildUrl(v);
-		install(url[0], url[1], alias);
+		install(url[0], url[1], alias, cb);
 	}
 
-	static function downloadRelease(v:String, ?alias:String):Void {
+	public static function downloadRelease(v:String, ?alias:String, ?cb:String->Void):Void {
 		final url = Utils.getReleaseUrl(v);
-		install(url[0], url[1], alias);
+		install(url[0], url[1], alias, cb);
 	}
 
-	static function install(url:String, filename:String, ?alias:String):Void {
+	static function install(url:String, filename:String, ?alias:String, ?cb:String->Void):Void {
 		url = url + filename;
 		filename = Path.withoutDirectory(filename);
 		final path = Path.join([Utils.releasesDir, filename]);
 
 		DownloadHelper.download(url, path, () -> {
 			Sys.println('Downloaded $filename');
-			installFile(path, filename, alias);
+			alias = installFile(path, filename, alias);
+			if (cb != null) cb(alias);
 		});
 	}
 
-	static function installFile(path:String, filename:String, ?alias:String):Void {
+	static function installFile(path:String, filename:String, ?alias:String):String {
 		final out = DownloadHelper.extract(path);
 		FileSystem.deleteFile(path);
 
@@ -91,6 +92,7 @@ class HaxeDownload {
 		try FileSystem.deleteFile(versionPath) catch(_) {}
 		FileSync.symlink(releasePath, versionPath);
 		Sys.println('Installed $filename as $alias');
+		return alias;
 	}
 
 	public static function displayUsage() {
