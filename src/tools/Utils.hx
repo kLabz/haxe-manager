@@ -51,9 +51,8 @@ class Utils {
 	public static function getReleaseUrl(v:String):Array<String> {
 		return switch Sys.systemName() {
 			case "Linux" if (isArm64()):
-				// TODO
-				throw "Haxe releases don't include linux-arm64 binaries yet";
-				// ['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-linux-arm64.tar.gz'];
+				final nightly = HaxeNightlies.resolve(v);
+				['https://build.haxe.org/builds/haxe/linux-arm64/' + Path.directory(nightly), Path.withoutDirectory(nightly) + '.tar.gz'];
 			case "Linux":
 				['https://github.com/HaxeFoundation/haxe/releases/download/$v/', 'haxe-$v-linux64.tar.gz'];
 			case "Mac":
