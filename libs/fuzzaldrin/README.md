@@ -17,4 +17,5 @@ repository because Haxe Manager needs to be able to run without `haxelib` (or,
 to be more precise, without its `neko` dependency).
 
 Note that some changes have been made to make it fit my needs, that can be seen
-in the git history of current directory.
+in the git history of current directory (well, that was before the initial PR got
+squashed...).

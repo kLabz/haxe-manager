@@ -1,5 +1,14 @@
 common.hxml
+
 -cp src
+
+# Fake libs (also minimal versions)
+-cp libs/format/src
+-cp libs/haxelib/src
+-cp libs/ansi/src
+-cp libs/fuzzaldrin/src
+-cp libs/fzf/src
+
 --hxb build/hx.hxb
 HaxeManager
 --interp
