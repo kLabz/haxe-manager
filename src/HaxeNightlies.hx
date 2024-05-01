@@ -66,7 +66,7 @@ class HaxeNightlies {
 	static function updateNightliesData() {
 		if (!ensureSetup()) {
 			Sys.println("Updating nightlies data...");
-			git(["fetch", HAXE_REPO], ROOT);
+			git(["fetch", HAXE_REPO, "development:development"], ROOT);
 		}
 		updated = true;
 	}
