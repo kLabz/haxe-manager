@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROOT=$(dirname $(readlink -f $0))
-HAXE_VER=$(cat build/.current)
+HAXE_VER=$(cat $ROOT/build/.current)
 
 mkdir -p "$ROOT/releases"
 mkdir -p "$ROOT/versions"
