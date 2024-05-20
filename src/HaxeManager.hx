@@ -39,6 +39,20 @@ class HaxeManager {
 			case ["--help", ["download"]]: HaxeDownload.displayUsage();
 			case ["--help", ["select"]]: HaxeSelect.displayUsage();
 
+			// Experimental commands
+
+			// Note: this is not suited for eval (or -cmd) using stdin, as that
+			// will not be forwarded properly
+			case ["with", args] if (args.length > 0):
+				var v = args.shift();
+				if (v == "rc") v = HaxeRc.getRc();
+				final path = Utils.find(v);
+				Utils.runHaxe(path, args);
+
+			// Internal commands
+			case ["bundled", []]: Sys.println(BundledHaxe.getBundledVersion());
+			case ["bundle", [version]]: BundledHaxe.setBundledVersion(version);
+
 			case [v, []]: HaxeSelect.select(v);
 			case _: throw 'Invalid arguments';
 		}

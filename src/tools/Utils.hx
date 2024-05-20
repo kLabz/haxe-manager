@@ -7,9 +7,11 @@ import sys.FileSystem;
 import sys.io.Process;
 
 import ansi.ANSI;
+using tools.NullTools;
 
 class Utils {
 	public static inline var binDir = "bin";
+	public static inline var bundleDir = "build";
 	public static inline var currentDir = "current";
 	public static inline var versionsDir = "versions";
 	public static inline var releasesDir = "releases";
@@ -34,9 +36,9 @@ class Utils {
 		Sys.stderr().flush();
 	}
 
-	public static function getBuildUrl(v:String):Array<String> {
+	public static function getBuildUrl(v:String, ?os:String):Array<String> {
 		// TODO: arch variants
-		return switch Sys.systemName() {
+		return switch os.or(Sys.systemName()) {
 			case "Linux":
 				['https://build.haxe.org/builds/haxe/linux64/', 'haxe_$v.tar.gz'];
 			case "Mac":
@@ -95,6 +97,28 @@ class Utils {
 		};
 	}
 
+	public static function runHaxe(path:String, args:Array<String>):Void {
+		final exe = switch Sys.systemName() {
+			case "Windows": "haxe.exe";
+			case _: "haxe";
+		};
+
+		final cwd = Sys.getCwd();
+		final path = Path.join([cwd, path]);
+		final old_std = Sys.getEnv("HAXE_STD_PATH");
+
+		Sys.setCwd(Utils.getCallSite());
+		Sys.putEnv("HAXE_STD_PATH", Path.join([path, "std"]));
+
+		var ret = Sys.command(Path.join([path, exe]), args);
+
+		Sys.putEnv("HAXE_STD_PATH", old_std);
+		Sys.setCwd(cwd);
+
+		Sys.exit(ret);
+	}
+
+	// TODO: factorize with runHaxe
 	public static function getVersionString(path:String):Null<String> {
 		final exe = switch Sys.systemName() {
 			case "Windows": "haxe.exe";
@@ -112,6 +136,18 @@ class Utils {
 			proc.close();
 			return null;
 		}
+	}
+
+	public static function find(v:String, ?rec:Bool = false):Null<String> {
+		var dir = Path.join([versionsDir, v]);
+		if (FileSystem.exists(dir)) return dir;
+
+		dir = Path.join([releasesDir, v]);
+		if (FileSystem.exists(dir)) return dir;
+
+		v = resolveRelease(v);
+		if (v != null) return Path.join([releasesDir, v]);
+		return null;
 	}
 
 	public static function hasVersion(v:String):Bool {
@@ -135,9 +171,18 @@ class Utils {
 		return null;
 	}
 
-	public static function selectRelease(r:String):Void {
+	public static function hasRelease(r:String):Bool {
 		final dir = Path.join([releasesDir, r]);
-		if (!FileSystem.exists(dir)) throw 'Version $r is not installed';
+		return FileSystem.exists(dir);
+	}
+
+	public static function selectRelease(r:String):Void {
+		var dir = Path.join([releasesDir, r]);
+		if (!hasRelease(r)) {
+			r = resolveRelease(r);
+			if (r == null) throw 'Version $r is not installed';
+			dir = Path.join([releasesDir, r]);
+		}
 
 		unlinkCurrent();
 		link(dir);
@@ -160,5 +205,16 @@ class Utils {
 		} else {
 			FileSync.symlink(dir, currentDir, [SYMLINK_DIR]);
 		}
+	}
+
+	public static function rmdir(dir:String) {
+		if (!FileSystem.isDirectory(dir)) return; // TODO: error?
+
+		for (entry in FileSystem.readDirectory(dir)) {
+			final path = Path.join([dir, entry]);
+			try FileSystem.deleteFile(path) catch(_) rmdir(path);
+		}
+
+		FileSystem.deleteDirectory(dir);
 	}
 }
