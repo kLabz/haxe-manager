@@ -9,6 +9,5 @@ common.hxml
 -cp libs/fuzzaldrin/src
 -cp libs/fzf/src
 
---hxb build/hx.hxb
 HaxeManager
 --interp
