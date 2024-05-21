@@ -12,6 +12,7 @@ import fzf.WordNav;
 
 typedef FzfOptions = {
 	@:optional var prompt:String;
+	@:optional var initialSearch:String;
 	@:optional var geom:{width:Int, height:Int};
 }
 
@@ -88,6 +89,12 @@ class Fzf {
 
 		// TODO: find a way to have a proper _new_ tty
 		if (options.geom == null) this.tty = Tty.init(Loop.defaultLoop(), File.stderr).resolve();
+
+		if (options.initialSearch ?? "" != "") {
+			currentFilter = options.initialSearch;
+			cursor = currentFilter.length;
+			updateFilter();
+		}
 
 		var esc = [];
 		while (true) {
