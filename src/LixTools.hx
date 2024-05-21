@@ -99,7 +99,9 @@ class LixTools {
 							addHaxelib(libName, parts[1]);
 
 						case "gh" | "github":
-							addGitLib(lib, "https" + source.substr(protocol.length));
+							var url = source.substr(protocol.length + 1);
+							if (!StringTools.startsWith(url, "/")) url = '//github.com/$url';
+							addGitLib(lib, 'https:$url');
 
 						case "http" | "https":
 							addGitLib(lib, source);
