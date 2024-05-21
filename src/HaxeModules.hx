@@ -33,7 +33,7 @@ class HaxeModules {
 		final proc = new Process("haxe", [
 			"--cwd", cwd,
 			hxml,
-			"-cp", FileSystem.absolutePath("extra/classpath/src"),
+			"-cp", FileSystem.absolutePath("res/classpath/src"),
 			"--macro", "ClassPathMacro.run()",
 			"--no-output"
 		]);

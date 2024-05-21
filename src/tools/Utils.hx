@@ -11,7 +11,7 @@ using tools.NullTools;
 
 class Utils {
 	public static inline var binDir = "bin";
-	public static inline var bundleDir = "build";
+	public static inline var bundleDir = "res";
 	public static inline var currentDir = "current";
 	public static inline var versionsDir = "versions";
 	public static inline var releasesDir = "releases";

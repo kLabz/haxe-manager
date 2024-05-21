@@ -1,8 +1,0 @@
-{
-  "name": "++haxe",
-  "version": "1.0.0",
-  "main": "parse.js",
-  "dependencies": {
-    "haxe-error-parser": "0.1.2"
-  }
-}

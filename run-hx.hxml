@@ -1,4 +1,4 @@
 common.hxml
 -w -WAll
---hxb-lib build/hx.hxb
+--hxb-lib res/hx.hxb
 --run HaxeManager

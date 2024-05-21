@@ -1,7 +1,7 @@
-releases/
-versions/
-builds/
-current
-data/
 bin/
-build/*.hxb
+builds/
+data/
+releases/
+res/*.hxb
+versions/
+current

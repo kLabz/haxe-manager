@@ -70,11 +70,6 @@ jobs:
           hx current --name
           hx current --full
 
-      - name: Install extra tools
-        run: |
-          sh ./extra/install-all.sh
-          ls -Al bin/
-
   test-windows:
     strategy:
       fail-fast: false

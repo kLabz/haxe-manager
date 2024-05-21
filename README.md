@@ -78,51 +78,10 @@ Switch to Haxe version specified in `.haxerc` with `hx rc`. Alternatively, one-o
 operations can be done with `hx with rc [haxe compiler args]` without altering
 currently selected Haxe version.
 
+### `haxe_libraries`
+
 Install libraries as defined in lix's `haxe_libraries` folder: `hx lix-libs`
 
 Alternatively, generate a `install.hxml` file (to be used with
 `haxelib state load install.hxml`) by running `hx lix-to-install install.hxml`
-
-## Included tools
-
-`extra/` folder contains optional tools you can install individually with their
-`install.sh` script or all at once with `install-all.sh`.
-
-Note that those have been written when Haxe Manager was unix only and probably
-can't work at all on Windows.
-
-### `++haxe`
-
-Note if you're using Haxe >= 4.3.0: this is not useful anymore, since
-[pretty errors](https://github.com/HaxeFoundation/haxe/pull/10863) were added there.
-
-Wraps `haxe` with a nodejs wrapper that parses and pretty prints Haxe errors,
-trying to guess the error hierarchy and displaying highlighted sources instead
-of just positions.
-
-Usage: `++haxe <args you would pass to haxe>`
-
-### `make-haxe`
-
-Mostly useful for bisecting or when building and switching haxe versions often.
-
-Wraps Haxe repository's `make haxe` with some cache that will be applied when
-git state is clean (or when you pass `--force-cache`). Build result (`haxe` and
-`haxelib` binaries) are stored in haxe-manager cache to avoid building next time.
-
-### `hx-mklocal`
-
-Save your current binaries + std from your local Haxe repository as a named
-version that you can use with haxe-manager.
-
-Usage: from your Haxe repository, `hx-mklocal . custom-4.4.0` (replace `.` with
-the path to your repository if you're executing from somewhere else)
-
-### `hx-upgrade`
-
-Update your local (git) copy of haxe-manager.
-
-### `rofi-haxe`
-
-[rofi](https://github.com/davatorium/rofi) wrapper to `hx` command, to graphically select a Haxe version.
 
