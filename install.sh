@@ -9,6 +9,7 @@ mkdir -p "$ROOT/bin"
 
 # Install cli launcher
 cp extra/hx bin/
+cp extra/hxlib bin/
 
 BUILD_OS="linux64"
 if [[ "$OSTYPE" == "darwin"* ]]; then

@@ -12,6 +12,7 @@ REM Install base tools
 ECHO F | XCOPY /S /Q /Y /F "extra/haxe.bat" "bin/haxe.bat"
 ECHO F | XCOPY /S /Q /Y /F "extra/haxelib.bat" "bin/haxelib.bat"
 ECHO F | XCOPY /S /Q /Y /F "extra/hx.bat" "bin/hx.bat"
+ECHO F | XCOPY /S /Q /Y /F "extra/hxlib.bat" "bin/hxlib.bat"
 
 REM Setup included Haxe version
 MKLINK /D "versions/5.0.0-alpha.1+%HAXE_VER%" "%ROOT%/build/windows64_%HAXE_VER%"
