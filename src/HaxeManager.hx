@@ -13,7 +13,11 @@ class HaxeManager {
 			case [null, _]: HaxeSelect.fzf();
 			case ["download", args]: HaxeDownload.run(args);
 			case ["select", args]: HaxeSelect.run(args);
-			case ["rc", _]: HaxeRc.resolve();
+
+			// Lix related commands
+			case ["rc", []]: LixTools.resolveHaxe();
+			case ["lix-to-install", [file]]: LixTools.generateInstallHxml(file);
+			case ["lix-libs", []]: LixTools.applyLibs();
 
 			case ["install", [file]]: HaxeDownload.installLocal(file);
 			case ["install", [file, alias]]: HaxeDownload.installLocal(file, alias);
@@ -45,7 +49,7 @@ class HaxeManager {
 			// will not be forwarded properly
 			case ["with", args] if (args.length > 0):
 				var v = args.shift();
-				if (v == "rc") v = HaxeRc.getRc();
+				if (v == "rc") v = LixTools.getRc();
 				final path = Utils.find(v);
 				Utils.runHaxe(path, args);
 
@@ -108,6 +112,13 @@ class HaxeManager {
 		lines = lines.concat([
 			'   or: ${ORANGE}hx rc${RESET}',
 			'       Install and select Haxe version specified by .haxerc file',
+			'',
+			'   or: ${ORANGE}hx lix-libs${RESET}',
+			'       Install libraries as specified by lix in haxe_libraries folder',
+			'',
+			'   or: ${ORANGE}hx lix-to-install ${UNDERLINE}<install.hxml>${RESET}',
+			'       Generate installation instruction for haxelib in ${BOLD}install.hxml${BOLD_OFF}',
+			'       from lix data in haxe_libraries folder',
 			'',
 			'   or: ${ORANGE}hx list${RESET}',
 			'       Display all installed Haxe versions',
