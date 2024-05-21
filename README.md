@@ -6,6 +6,8 @@ Easily download and switch haxe versions (currently tested on
 Run `install.sh` (`install.bat` on Windows) and update `PATH` / `HAXE_STD_PATH` as
 requested.
 
+Note for windows users: [how to set your PATH environment variable](https://www.computerhope.com/issues/ch000549.htm)
+
 ## Select a version
 
 Run `hx` to display the haxe version switch (using a Haxe port of [`fzf`](https://github.com/junegunn/fzf)
@@ -62,6 +64,24 @@ or other tools.
 
 Usage: `hx list-modules [compile.hxml]` (will default to `build.hxml`)
 
+## Included `haxelib` version
+
+If you need to run commands from `haxelib` nightlies, but you currently selected
+Haxe version is bundling an older haxelib, you can access Haxe Manager's bundled
+version of haxelib through `hxlib`:
+
+Usage: `hxlib state load install.hxml` / `hxlib state save install.hxml`
+
+## [lix](https://github.com/lix-pm/) related tooling
+
+Switch to Haxe version specified in `.haxerc` with `hx rc`. Alternatively, one-off
+operations can be done with `hx with rc [haxe compiler args]` without altering
+currently selected Haxe version.
+
+Install libraries as defined in lix's `haxe_libraries` folder: `hx lix-libs`
+
+Alternatively, generate a `install.hxml` file (to be used with
+`haxelib state load install.hxml`) by running `hx lix-to-install install.hxml`
 
 ## Included tools
 
