@@ -1,0 +1,13 @@
+{
+  "name": "fzf",
+  "description": "Haxe implementation of fzf-like picker",
+  "version": "0.0.1",
+  "releasenote": "Basic impl for eval",
+  "url": "https://github.com/kLabz/haxe-manager/tree/master/libs/fzf",
+  "license": "MIT",
+  "tags": [],
+  "classPath": "src",
+  "contributors": [
+    "klabz"
+  ]
+}

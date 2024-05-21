@@ -10,12 +10,18 @@ import fuzzaldrin.Filter;
 import fuzzaldrin.Scorer;
 import fzf.WordNav;
 
+typedef FzfOptions = {
+	@:optional var prompt:String;
+	@:optional var geom:{width:Int, height:Int};
+}
+
 class Fzf {
 	final items:Array<String>;
 	final cb:Option<String>->Void;
 	final prompt:String;
 	final strippedPrompt:String;
 	final tty:Tty;
+	final options:FzfOptions;
 
 	var scroll:Int = 0;
 	var cursor:Int = 0;
@@ -58,9 +64,14 @@ class Fzf {
 	static inline var Grey = ANSI.CSI + '38;5;241m';
 	static inline var GreyBack = ANSI.CSI + '48;5;236m';
 
-	public function new(items:Array<String>, ?prompt:String = "", cb:Option<String>->Void) {
+	static function defaultOptions():FzfOptions {
+		return {};
+	}
+
+	public function new(items:Array<String>, ?options:FzfOptions, cb:Option<String>->Void) {
 		this.items = items;
 		this.cb = cb;
+		this.options = options ?? defaultOptions();
 		this.filteredItems = items.map(i -> {
 			candidate: i,
 			string: i,
@@ -71,11 +82,12 @@ class Fzf {
 		});
 
 		// TODO: strip sequences in prompt input?
+		var prompt = options.prompt ?? "";
 		this.strippedPrompt = (prompt == "" ? "" : prompt + " ") + "> ";
 		this.prompt = ANSI.set(Bold) + LightBlue + this.strippedPrompt + ANSI.set(Off);
 
 		// TODO: find a way to have a proper _new_ tty
-		this.tty = Tty.init(Loop.defaultLoop(), File.stderr).resolve();
+		if (options.geom == null) this.tty = Tty.init(Loop.defaultLoop(), File.stderr).resolve();
 
 		var esc = [];
 		while (true) {
@@ -195,7 +207,7 @@ class Fzf {
 
 	function redraw():Void {
 		var screen = "";
-		final geom = tty.getWinSize().resolve();
+		final geom = options.geom ?? tty.getWinSize().resolve();
 		final height = geom.height - 2;
 		final hasScroll = height < filteredItems.length;
 

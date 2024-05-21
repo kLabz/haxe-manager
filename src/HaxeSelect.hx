@@ -21,7 +21,7 @@ class HaxeSelect {
 	public static function fzf():Void {
 		final prompt = 'Current: ' + Utils.getCurrentFull().or('none');
 
-		new Fzf(Utils.getVersions(), prompt, res -> {
+		new Fzf(Utils.getVersions(), {prompt: prompt}, res -> {
 			switch res {
 				case None: Sys.println('No Haxe version selected');
 				case Some(v): select(v);
