@@ -7,5 +7,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	BUILD_OS="mac"
 fi
 
-VERSION="${BUILD_OS}_569e52e"
+HAXE_VER=$(cat $ROOT/build/.current)
+VERSION="${BUILD_OS}_${HAXE_VER}"
+
 $ROOT/build/$VERSION/haxelib $@
