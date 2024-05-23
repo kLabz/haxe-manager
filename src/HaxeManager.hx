@@ -51,6 +51,7 @@ class HaxeManager {
 				var v = args.shift();
 				if (v == "rc") v = LixTools.getRc();
 				final path = Utils.find(v);
+				if (path == null) throw 'Version $v is not installed';
 				Utils.runHaxe(path, args);
 
 			// Internal commands
