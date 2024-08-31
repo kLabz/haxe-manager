@@ -1,3 +1,4 @@
+import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.io.Path;
 import sys.FileSystem;
@@ -8,6 +9,7 @@ class ClassPathMacro {
 		var targets = ["js", "hl", "cpp", "cppia", "cs", "java", "jvm", "lua", "swf", "neko", "php", "python", "interp"];
 		var target = first(defines.keys(), targets);
 		Sys.println('[TARGET]: $target');
+		Sys.println('[OUT]: ${Compiler.getOutput()}');
 
 		var ownPath = FileSystem.fullPath(Path.join([Context.resolvePath("ClassPathMacro.hx"), '..']));
 

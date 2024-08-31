@@ -36,8 +36,13 @@ class HaxeManager {
 				Sys.println(Utils.getCurrentFull().or(""));
 
 			case ["list", []]: for (v in Utils.getVersions()) Sys.println(v);
-			case ["list-modules", []]: HaxeModules.listModules();
-			case ["list-modules", [hxml]]: HaxeModules.listModules(hxml);
+			case ["list-classpath", []]: HaxeClasspath.list();
+			case ["list-classpath", [hxml]]: HaxeClasspath.list(hxml);
+			case ["list-modules", []]: HaxeClasspath.listModules();
+			case ["list-modules", [hxml]]: HaxeClasspath.listModules(hxml);
+
+			case ["dap-config", []]: HaxeClasspath.getDapConfig();
+			case ["dap-config", [hxml]]: HaxeClasspath.getDapConfig(hxml);
 
 			case ["--help", []]: displayUsage();
 			case ["--help", ["download"]]: HaxeDownload.displayUsage();
