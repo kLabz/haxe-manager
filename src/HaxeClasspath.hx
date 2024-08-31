@@ -113,16 +113,35 @@ class HaxeClasspath {
 	public static function getDapConfig(?hxml:String = "build.hxml"):Void {
 		try {
 			var data = getClasspath(hxml, true);
+			Sys.println('{');
+
+			if (data.target == 'hl') {
+				Sys.println([
+					'	{',
+					'		name="HashLink",',
+					'		request="launch",',
+					'		type="hl",',
+					'		cwd="${data.cwd}",',
+					'		classPaths={${data.classpath.map(cp -> "\'" + cp + "\'").join(", ")}},',
+					'		program="${data.out}"',
+					'	},'
+				].join('\n'));
+			}
+
 			Sys.println([
-				'{',
-				'	name="HashLink",',
-				'	request="launch",',
-				'	type="hl",',
-				'	cwd="${data.cwd}",',
-				'	classPaths={${data.classpath.map(cp -> "\'" + cp + "\'").join(", ")}},',
-				'	program="${data.out}"',
-				'}'
+				'	{',
+				'		name="Eval",',
+				'		request="launch",',
+				'		type="eval",',
+				'		cwd="${data.cwd}",',
+				'		classPaths={${data.classpath.map(cp -> "\'" + cp + "\'").join(", ")}},',
+				'		haxeExecutable={executable="haxe"},',
+				'		args="${hxml}",',
+				'		trace=true,',
+				'	},'
 			].join('\n'));
+
+			Sys.println('}');
 		} catch (e) {
 			Utils.displayError(Std.string(e));
 		}
