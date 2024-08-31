@@ -12,14 +12,16 @@ class ClassPathMacro {
 		Sys.println('[OUT]: ${Compiler.getOutput()}');
 
 		var ownPath = FileSystem.fullPath(Path.join([Context.resolvePath("ClassPathMacro.hx"), '..']));
+		var fullPath = Context.defined('fullpath');
 
-		for (cp in haxe.macro.Context.getClassPath()) {
+		for (cp in Context.getClassPath()) {
 			if (cp == "") continue;
 			if (FileSystem.fullPath(cp) == ownPath) continue;
+			if (fullPath) cp = FileSystem.fullPath(cp);
 			Sys.println('[CLASSPATH]: $cp');
 		}
 
-		haxe.macro.Context.fatalError('Compilation aborted', haxe.macro.Context.currentPos());
+		Context.fatalError('Compilation aborted', Context.currentPos());
 	}
 
 	static function first(defines:Iterator<String>, targets:Array<String>) {

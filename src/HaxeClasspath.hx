@@ -32,19 +32,24 @@ class HaxeClasspath {
 
 	static var stdRoot = FileSystem.fullPath(Path.join([Sys.getCwd(), "current", "std"]));
 
-	static function getClasspath(?hxml:String = "build.hxml"):ClasspathResult {
+	static function getClasspath(?hxml:String = "build.hxml", ?fullpath:Bool = false):ClasspathResult {
 		final cwd = Utils.getCallSite();
 		hxml = Path.isAbsolute(hxml) ? hxml : Path.join([cwd, hxml]);
 		if (!FileSystem.exists(hxml)) throw 'Cannot find hxml file $hxml';
 
 		Sys.putEnv("HAXE_STD_PATH", stdRoot);
-		final proc = new Process("haxe", [
+		final args = [
 			"--cwd", cwd,
 			hxml,
 			"-cp", FileSystem.absolutePath("res/classpath/src"),
 			"--macro", "ClassPathMacro.run()",
 			"--no-output"
-		]);
+		];
+		if (fullpath) {
+			args.push("-D");
+			args.push("fullpath");
+		}
+		final proc = new Process("haxe", args);
 
 		try {
 			final code = proc.exitCode();
@@ -107,7 +112,7 @@ class HaxeClasspath {
 
 	public static function getDapConfig(?hxml:String = "build.hxml"):Void {
 		try {
-			var data = getClasspath(hxml);
+			var data = getClasspath(hxml, true);
 			Sys.println([
 				'{',
 				'	name="HashLink",',
