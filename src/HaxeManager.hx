@@ -16,6 +16,8 @@ class HaxeManager {
 
 			// Lix related commands
 			case ["rc", []]: LixTools.resolveHaxe();
+			case ["rc", ["update"]]: LixTools.updateHaxeRc();
+			case ["rc", ["filename"]]: Sys.println(LixTools.getFilename());
 			case ["lix-to-install", [file]]: LixTools.generateInstallHxml(file);
 			case ["lix-libs", []]: LixTools.applyLibs();
 
@@ -34,6 +36,12 @@ class HaxeManager {
 					throw "`hx current --full` is not supported on Windows";
 
 				Sys.println(Utils.getCurrentFull().or(""));
+
+			case ["current", ["--sha"]]:
+				if (Sys.systemName() == "Windows")
+					throw "`hx current --sha` is not supported on Windows";
+
+				Sys.println(HaxeNightlies.resolveSha(Utils.getCurrentSha()).or(""));
 
 			case ["list", []]: for (v in Utils.getVersions()) Sys.println(v);
 			case ["list-classpath", []]: HaxeClasspath.list();

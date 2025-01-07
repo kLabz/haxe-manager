@@ -8,10 +8,24 @@ class HaxeNightlies {
 	static inline var HAXE_REPO = "https://github.com/HaxeFoundation/haxe.git";
 	static var ref_check = ~/^[a-f0-9]{7,}$/i;
 
-	public static function resolve(ref:String):String {
+	public static function resolve(ref:String, ?strict:Bool = false):Null<String> {
 		if (SemVer.isValid(ref)) return getNightly(ref, true);
 		if (isValid(ref)) return getNightly(ref);
-		return ref;
+		return strict ? null : ref;
+	}
+
+	public static function resolveSha(ref:String):Null<String> {
+		final date = getCommitDate(ref);
+		if (date == null) {
+			if (!updated) {
+				updateNightliesData();
+				return resolveSha(ref);
+			} else {
+				return null;
+			}
+		} else {
+			return getShortSha(ref);
+		}
 	}
 
 	public static function isValid(ref:String):Bool {

@@ -14,27 +14,47 @@ enum HaxeRcError {
 	ParseError(err:String);
 }
 
+typedef HaxeshimConfig = {
+	var version(default, null):String;
+	var resolveLibs(default, null):String; // TODO if it becomes relevant
+}
+
 class LixTools {
 	public static function safeGetRc():Null<String> {
 		return try getRc() catch(_) null;
 	}
 
-	public static function getRc():Null<String> {
+	static function getFullRc():HaxeshimConfig {
 		final cwd = Utils.getCallSite();
 
 		// TODO (?): check parent directories too
 		final rc = Path.join([cwd, ".haxerc"]);
 
 		if (FileSystem.exists(rc)) {
-			try {
-				final version = Json.parse(File.getContent(rc)).version;
-				return version;
-			} catch (e) {
-				throw ParseError(Std.string(e));
-			}
+			try return Json.parse(File.getContent(rc)) catch (e) throw ParseError(Std.string(e));
 		} else {
 			throw NotFound;
 		}
+	}
+
+	public static function getFilename():String {
+		final version = getFullRc().version;
+		if (version == null) Utils.failWith('Invalid .haxerc: missing version');
+
+		var filename = HaxeNightlies.resolve(version, true);
+		if (filename == null) Utils.failWith('Can only get filename for nightlies.');
+		return filename;
+	}
+
+	static function writeRc(rc:HaxeshimConfig):Void {
+		final cwd = Utils.getCallSite();
+		File.saveContent(Path.join([cwd, ".haxerc"]), Json.stringify(rc, '  '));
+	}
+
+	public static function getRc():String {
+		final version = getFullRc().version;
+		if (version == null) Utils.failWith('Invalid .haxerc: missing version');
+		return version;
 	}
 
 	public static function resolveHaxe() {
@@ -52,14 +72,27 @@ class LixTools {
 				}
 			}
 		} catch (e:HaxeRcError) {
-			switch e {
-				case NotFound:
-					Utils.displayError('Did not find any .haxerc to apply');
-				case ParseError(e):
-					Utils.displayError('Could not get Haxe version from .haxerc: $e');
-			}
+			Utils.failWith(switch e {
+				case NotFound: 'Did not find any .haxerc to apply';
+				case ParseError(e): 'Could not parse .haxerc: $e';
+			});
+		}
+	}
 
-			Sys.exit(1);
+	//TODO: support releases too
+	public static function updateHaxeRc() {
+		final sha = HaxeNightlies.resolveSha(Utils.getCurrentSha());
+		if (sha == null) Utils.failWith('Could not get current Haxe short sha');
+
+		try {
+			final rc = getFullRc();
+			writeRc({version: sha, resolveLibs: rc.resolveLibs});
+		} catch (e:HaxeRcError) {
+			//TODO: factorize with resolveHaxe error handling
+			Utils.failWith(switch e {
+				case NotFound: 'Did not find any .haxerc to apply';
+				case ParseError(e): 'Could not parse .haxerc: $e';
+			});
 		}
 	}
 

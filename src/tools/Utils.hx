@@ -97,6 +97,14 @@ class Utils {
 		};
 	}
 
+	public static function getCurrentSha():Null<String> {
+		final version = getCurrent();
+		if (version == null) return null;
+		final parts = version.split("+");
+		if (parts.length != 2) return null;
+		return parts.pop();
+	}
+
 	public static function runHaxe(path:String, args:Array<String>):Void {
 		final exe = switch Sys.systemName() {
 			case "Windows": "haxe.exe";
