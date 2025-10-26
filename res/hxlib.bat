@@ -1,7 +1,7 @@
 @ECHO OFF
 
 SET ROOT=%~dp0
-SET ROOT=%ROOT%..
-SET VERSION=windows64_569e52e
+SET CALL_SITE=%CD%
+CD "%ROOT%..\res\windows64_569e52e"
 
-CALL %ROOT%\res\%VERSION%\haxelib.exe %*
+haxelib.exe --cwd %CALL_SITE% %*
