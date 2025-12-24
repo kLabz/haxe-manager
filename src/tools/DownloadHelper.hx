@@ -22,6 +22,10 @@ class DownloadHelper {
 			final newUrl = req.responseHeaders.get("Location");
 			output.close();
 			download(newUrl, out, cb);
+		} else if (req.responseHeaders.exists("location")) {
+			final newUrl = req.responseHeaders.get("location");
+			output.close();
+			download(newUrl, out, cb);
 		} else {
 			output.close();
 			cb();
