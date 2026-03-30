@@ -196,6 +196,16 @@ class Utils {
 		link(dir);
 	}
 
+	public static function setAlias(ref:String, alias:String):Void {
+		final release = resolveRelease(ref);
+		if (release == null) failWith('Cannot find release $ref');
+
+		final releasePath = Path.join([FileSystem.absolutePath(releasesDir), release]);
+		final versionPath = Path.join([Utils.versionsDir, alias]);
+		try FileSystem.deleteFile(versionPath) catch(_) {}
+		FileSync.symlink(releasePath, versionPath);
+	}
+
 	public static function getCallSite():String {
 		return Sys.getEnv("CALL_SITE");
 	}
