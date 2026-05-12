@@ -24,6 +24,7 @@ class HaxeManager {
 			case ["install", [file]]: HaxeDownload.installLocal(file);
 			case ["install", [file, alias]]: HaxeDownload.installLocal(file, alias);
 			case ["alias", [ref, version]]: Utils.setAlias(ref, version);
+			case ["clear-alias", [alias]]: Utils.clearAlias(alias);
 
 			case ["current", []]: Sys.println(Utils.getCurrent().or(""));
 			case ["current", ["--name"]]:

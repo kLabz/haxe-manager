@@ -84,8 +84,8 @@ class HaxeDownload {
 	static function installFile(path:String, filename:String, ?alias:String):String {
 		final out = DownloadHelper.extract(path);
 		FileSystem.deleteFile(path);
-		if (alias == null) alias = Utils.getVersionString(releasePath);
-		Utils.setAlias(out, alias);
+
+		final alias = Utils.setAlias(out, alias);
 		Sys.println('Installed $filename as $alias');
 		return alias;
 	}

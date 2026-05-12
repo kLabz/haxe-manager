@@ -173,6 +173,7 @@ class Utils {
 
 	public static function resolveRelease(ref:String):Null<String> {
 		for (r in FileSystem.readDirectory(releasesDir)) {
+			if (r == ref) return r;
 			if (StringTools.endsWith(r, '_$ref')) return r;
 		}
 
@@ -196,14 +197,24 @@ class Utils {
 		link(dir);
 	}
 
-	public static function setAlias(ref:String, alias:String):Void {
+	public static function setAlias(ref:String, ?alias:String):String {
+		if (StringTools.endsWith(ref, "/")) ref = ref.substr(0, ref.length - 1);
 		final release = resolveRelease(ref);
 		if (release == null) failWith('Cannot find release $ref');
 
 		final releasePath = Path.join([FileSystem.absolutePath(releasesDir), release]);
-		final versionPath = Path.join([Utils.versionsDir, alias]);
+		if (alias == null) alias = getVersionString(releasePath);
+
+		final versionPath = Path.join([versionsDir, alias]);
 		try FileSystem.deleteFile(versionPath) catch(_) {}
 		FileSync.symlink(releasePath, versionPath);
+
+		return alias;
+	}
+
+	public static function clearAlias(alias:String):Void {
+		final versionPath = Path.join([versionsDir, alias]);
+		try FileSystem.deleteFile(versionPath) catch(_) {}
 	}
 
 	public static function getCallSite():String {
