@@ -19,8 +19,8 @@ class ClassPathMacro {
 			if (StringTools.endsWith(cp, "/_generated")) continue;
 
 			// Some nightlies will fail there for jvm target, reporting java/_std which doesn't exist
-			var fcp = try FileSystem.fullPath(cp) catch (e) null;
-			if (fcp != null && fcp == ownPath) continue;
+			var fcp = try FileSystem.fullPath(cp) catch (e) continue;
+			if (fcp == ownPath) continue;
 			if (fullPath) cp = fcp;
 
 			Sys.println('[CLASSPATH]: $cp');
