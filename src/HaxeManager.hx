@@ -9,8 +9,16 @@ class HaxeManager {
 	}
 
 	public static function run(args:Array<String>):Void {
+		if (args[0] == "--prefix") {
+			args.shift();
+			final dir = args.shift();
+			if (dir == null) throw "`--prefix` requires a directory";
+			Utils.prefix = Utils.resolvePrefix(dir);
+		}
+
 		switch [args.shift(), args] {
 			case [null, _]: HaxeSelect.fzf();
+			case ["init-prefix", [dir]]: Utils.initPrefix(Utils.resolvePrefix(dir));
 			case ["download", args]: HaxeDownload.run(args);
 			case ["select", args]: HaxeSelect.run(args);
 
@@ -105,6 +113,14 @@ class HaxeManager {
 			'   or: ${ORANGE}hx select ${UNDERLINE}<VERSION>${RESET}',
 			'       Switch to installed Haxe version ${BOLD}VERSION${BOLD_OFF}',
 			'',
+			// '   or: ${ORANGE}hx init-prefix ${UNDERLINE}<DIR>${RESET}',
+			// '       Scaffold a local prefix in ${BOLD}DIR${BOLD_OFF} (its own ${BOLD}bin/${BOLD_OFF}, ${BOLD}current${BOLD_OFF} and',
+			// '       source-able ${BOLD}bin/setup-hx${BOLD_OFF}), sharing the global version pool',
+			// '',
+			// '   or: ${ORANGE}hx --prefix ${UNDERLINE}<DIR>${UNDERLINE_OFF} ${UNDERLINE}<COMMAND>${RESET}',
+			// '       Run any command against ${BOLD}DIR${BOLD_OFF}\'s ${BOLD}current${BOLD_OFF} instead of the global one',
+			// '       (e.g. ${ORANGE}hx --prefix .vim/hx ${UNDERLINE}<VERSION>${UNDERLINE_OFF}${RESET})',
+			// '',
 		];
 
 		if (Sys.systemName() == "Windows") {
