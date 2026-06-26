@@ -9,7 +9,9 @@ class HaxeManager {
 	}
 
 	public static function run(args:Array<String>):Void {
-		if (args[0] == "--prefix") {
+		// Repeatable so forwarding through a prefix's `bin/hx` wrapper (which already injects
+		// `--prefix`) never produces an invalid duplicate; last one wins.
+		while (args[0] == "--prefix") {
 			args.shift();
 			final dir = args.shift();
 			if (dir == null) throw "`--prefix` requires a directory";
