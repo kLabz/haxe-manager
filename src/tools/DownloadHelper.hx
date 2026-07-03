@@ -45,6 +45,17 @@ class DownloadHelper {
 		}
 	}
 
+	public static function urlExists(url:String):Bool {
+		final req = new Http(url);
+		var status = 0;
+		var errored = false;
+		req.onStatus = s -> status = s;
+		req.onError = _ -> errored = true;
+		try req.customRequest(false, new haxe.io.BytesOutput())
+		catch (_) errored = true;
+		return !errored && status >= 200 && status < 400;
+	}
+
 	public static function resolveRedirection(base:String, redir:String):String {
 		for (prefix in ["https://", "http://"]) {
 			if (redir.startsWith(prefix)) return redir;

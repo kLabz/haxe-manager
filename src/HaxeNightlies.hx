@@ -32,6 +32,29 @@ class HaxeNightlies {
 		return ref_check.match(ref);
 	}
 
+	public static function resolveBranchLatest(branch:String, isBuilt:(version:String)->Bool, ?maxDepth:Int = 50):Null<String> {
+		fetchBranch(branch);
+
+		for (i in 0...maxDepth) {
+			final ref = '$branch~$i';
+			final date = getCommitDate(ref);
+			if (date == null) break; // reached the end of available history
+			final version = '${date}_${branch}_${getShortSha(ref)}';
+			if (isBuilt(version)) return version;
+		}
+
+		return null;
+	}
+
+	static function fetchBranch(branch:String):Void {
+		// A fresh bare clone already contains every branch.
+		if (ensureSetup()) return;
+
+		Sys.println('Updating $branch data...');
+		try git(["fetch", HAXE_REPO, '$branch:$branch'], ROOT)
+		catch (e) throw 'Cannot fetch branch $branch: $e';
+	}
+
 	static function getNightly(ref:String, ?isTag:Bool = false):Null<String> {
 		final date = getCommitDate(ref);
 		if (date == null) {

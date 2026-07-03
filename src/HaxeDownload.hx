@@ -17,6 +17,8 @@ class HaxeDownload {
 			// Nightlies support
 			case ["latest"]: downloadLatest();
 			case ["latest", alias]: downloadLatest(alias);
+			case ["edge"]: downloadBranch("lab/edge", "edge");
+			case ["edge", alias]: downloadBranch("lab/edge", alias);
 			case ["aws", v] | ["nightly", v]: downloadNightly(v);
 			case ["aws", v, alias] | ["nightly", v, alias]: downloadNightly(v, alias);
 
@@ -56,6 +58,21 @@ class HaxeDownload {
 	static function downloadLatest(?alias:String = "dev", ?cb:String->Void):Void {
 		final url = Utils.getBuildUrl("latest");
 		install(url[0], url[1], alias, cb);
+	}
+
+	static function downloadBranch(branch:String, ?alias:String, ?cb:String->Void):Void {
+		Sys.println('Looking for latest $branch build...');
+		final v = HaxeNightlies.resolveBranchLatest(branch, isBuilt);
+		if (v == null) throw 'Could not find any published build for branch $branch';
+
+		Sys.println('Found build $v');
+		final url = Utils.getBuildUrl(v);
+		install(url[0], url[1], alias, cb);
+	}
+
+	static function isBuilt(v:String):Bool {
+		final url = Utils.getBuildUrl(v);
+		return DownloadHelper.urlExists(url[0] + url[1]);
 	}
 
 	public static function downloadNightly(v:String, ?alias:String, ?cb:String->Void):Void {
@@ -107,6 +124,10 @@ class HaxeDownload {
 			'       Download latest nightly',
 			'       Save as ${BOLD}AS_NAME${BOLD_OFF} if provided or use version number (with revision)',
 			'',
+			// '   or: ${ORANGE}hx download edge ${UNDERLINE}[AS_NAME]${RESET}',
+			// '       Download latest published build from the ${BOLD}lab/edge${BOLD_OFF} branch',
+			// '       Save as ${BOLD}AS_NAME${BOLD_OFF} if provided or use version number (with revision)',
+			// '',
 			'   or: ${ORANGE}hx download nightly ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
 			'   or: ${ORANGE}hx download aws ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
 			'       Download specific nightly ${BOLD}VERSION${BOLD_OFF} (e.g., ${BOLD}2023-01-22_development_dd5e467${BOLD_OFF})',

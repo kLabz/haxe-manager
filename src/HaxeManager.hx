@@ -106,6 +106,7 @@ class HaxeManager {
 			'   or: ${ORANGE}hx download ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
 			'   or: ${ORANGE}hx download nightly ${UNDERLINE}<VERSION>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
 			'   or: ${ORANGE}hx download latest ${UNDERLINE}[AS_NAME]${RESET}',
+			// '   or: ${ORANGE}hx download edge ${UNDERLINE}[AS_NAME]${RESET}',
 			'       Install Haxe releases or nightlies',
 			'',
 			'   or: ${ORANGE}hx install ${UNDERLINE}<FILE>${UNDERLINE_OFF} ${UNDERLINE}[AS_NAME]${RESET}',
